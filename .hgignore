@@ -1,0 +1,7 @@
+syntax: glob
+CMakeFiles
+CMakeCache.txt
+*~
+src/simplemodel
+Makefile
+cmake_install.cmake
