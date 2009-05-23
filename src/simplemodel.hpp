@@ -8,6 +8,9 @@ class keyboard_handler;
 }
 
 class simplemodel : public ymse::game {
+
+	float angx, angy, angz;
+
 public:
 	simplemodel();
 

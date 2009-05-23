@@ -1,13 +1,13 @@
 #include <iostream>
 #include <typeinfo>
 #include <ymse/gl_box_reshaper.hpp>
-#include <ymse/glut_core.hpp>
+#include <ymse/sdl_core.hpp>
 #include "gl_simple_perspective_reshaper.hpp"
 #include "simplemodel.hpp"
 
 int main(int argc, const char *argv[])
 try {
-	ymse::glut_core c;
+	ymse::sdl_core c;
 	c.init(argc, argv);
 
 	ymse::gl_simple_perspective_reshaper r;

@@ -10,5 +10,6 @@ target_link_libraries(
 	GL
 	glut
 	${YMSE_LIBRARY}
+	${SDL_LIBRARY}
 )
 

@@ -12,6 +12,8 @@ gl_simple_perspective_reshaper::~gl_simple_perspective_reshaper() {
 }
 
 void gl_simple_perspective_reshaper::reshape(int width, int height) {
+	glViewport(0, 0, width, height);
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
