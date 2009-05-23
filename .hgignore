@@ -5,3 +5,7 @@ CMakeCache.txt
 src/simplemodel
 Makefile
 cmake_install.cmake
+Doxyfile
+*.kdevelop
+*.kdevelop.filelist
+*.kdevses
