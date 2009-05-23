@@ -1,5 +1,6 @@
 add_executable(
 	simplemodel
+	gl_simple_perspective_reshaper.cpp
 	main.cpp
 	simplemodel.cpp
 )

@@ -2,7 +2,7 @@
 #include <typeinfo>
 #include <ymse/gl_box_reshaper.hpp>
 #include <ymse/glut_core.hpp>
-#include <ymse/gl_box_reshaper.hpp>
+#include "gl_simple_perspective_reshaper.hpp"
 #include "simplemodel.hpp"
 
 int main(int argc, const char *argv[])
@@ -10,8 +10,7 @@ try {
 	ymse::glut_core c;
 	c.init(argc, argv);
 
-	ymse::gl_box_reshaper r;
-	r.set_box(-220, -70, 220, 70);
+	ymse::gl_simple_perspective_reshaper r;
 	c.set_reshaper_object(&r);
 
 	simplemodel g;
