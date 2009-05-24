@@ -1,4 +1,5 @@
 #include <GL/gl.h>
+#include <GL/glu.h>
 #include "simplemodel.hpp"
 
 simplemodel::simplemodel() :
@@ -7,15 +8,19 @@ simplemodel::simplemodel() :
 	angz(0)
 {
 	glEnable(GL_DEPTH_TEST);
+
+	display_list = glGenLists(1);
 }
 
-void simplemodel::render() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+simplemodel::~simplemodel() {
+	glDeleteLists(display_list, 1);
+}
 
-	glMatrixMode(GL_MODELVIEW);
+void simplemodel::record_display_list() {
+	glNewList(display_list, GL_COMPILE);
 
-	glLoadIdentity();
-	glTranslated(0, 0, 10);
+	glPushMatrix();
+
 	glRotated(angx, 1, 0, 0);
 	glRotated(angy, 0, 1, 0);
 	glRotated(angz, 0, 0, 1);
@@ -60,6 +65,45 @@ void simplemodel::render() {
 
 	glEnd();
 
+	glPopMatrix();
+
+	glEndList();
+}
+
+void simplemodel::render() {
+	record_display_list();
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glViewport(0, 0, 256, 256);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	glTranslated(1.0, 0, 0);
+	gluPerspective(90.0, 1.0, 1.0, 100.0);
+	glScalef(1, 1, -1);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslated(0, 0, 10);
+
+	glCallList(display_list);
+
+	glViewport(256, 0, 256, 256);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	glTranslated(-1.0, 0, 0);
+	gluPerspective(90.0, 1.0, 1.0, 100.0);
+	glScalef(1, 1, -1);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslated(0, 0, 5);
+
+	glCallList(display_list);
 }
 
 void simplemodel::tick() {

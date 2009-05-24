@@ -9,10 +9,15 @@ class keyboard_handler;
 
 class simplemodel : public ymse::game {
 
+	unsigned display_list;
+
 	float angx, angy, angz;
+
+	void record_display_list();
 
 public:
 	simplemodel();
+	~simplemodel();
 
 	void render();
 	void tick();
