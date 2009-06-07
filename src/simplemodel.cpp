@@ -74,42 +74,20 @@ void simplemodel::render() {
 	record_display_list();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glViewport(0, 0, 256, 256);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	glTranslated(1.0, 0, 0);
-	gluPerspective(90.0, 1.0, 1.0, 100.0);
-	glScalef(1, 1, -1);
-
 	glMatrixMode(GL_MODELVIEW);
+
 	glLoadIdentity();
 	glTranslated(0, 0, 10);
-
-	glCallList(display_list);
-
-	glViewport(256, 0, 256, 256);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	glTranslated(-1.0, 0, 0);
-	gluPerspective(90.0, 1.0, 1.0, 100.0);
-	glScalef(1, 1, -1);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslated(0, 0, 5);
 
 	glCallList(display_list);
 }
 
 void simplemodel::tick() {
+/*
 	angx += 1.0;
 	angy += 0.7;
 	angz += 0.2;
+*/
 }
 
 ymse::keyboard_handler* simplemodel::get_keyboard_handler() {
