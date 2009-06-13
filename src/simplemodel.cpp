@@ -5,7 +5,8 @@
 simplemodel::simplemodel() :
 	angx(0),
 	angy(0),
-	angz(0)
+	angz(0),
+	contr(kbd)
 {
 	glEnable(GL_DEPTH_TEST);
 
@@ -80,7 +81,7 @@ void simplemodel::render() {
 	glPushMatrix();
 	gluPerspective(
 		90.0, // fov y
-		1.0, // Aspect
+		1.0, // Aspect (guaranteed by gl_box_reshaper)
 		1.0, // z near
 		100.0 // z far
 	);
@@ -109,6 +110,6 @@ void simplemodel::tick() {
 }
 
 ymse::keyboard_handler* simplemodel::get_keyboard_handler() {
-	return 0;
+	return &kbd;
 }
 

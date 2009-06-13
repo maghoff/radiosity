@@ -44,11 +44,22 @@ void camera::apply() {
 void camera::tick() {
 	if (!d->controller) return;
 
-	gl_matrix_scope sc(d->matrix);
+//	gl_matrix_scope sc(d->matrix);
+
+	glMatrixMode(GL_PROJECTION);
+
+	glPushMatrix();
+
+	glLoadIdentity();
 
 	glRotated(d->controller->roll(), 0, 0, 1);
 	glRotated(d->controller->yaw(), 0, 1, 0);
 	glRotated(d->controller->pitch(), 1, 0, 0);
 
-	glTranslated(0, 0, -d->controller->forward());
+	glTranslated(-d->controller->right(), 0, -d->controller->forward());
+
+	d->matrix.apply();
+	d->matrix.store();
+
+	glPopMatrix();
 }
