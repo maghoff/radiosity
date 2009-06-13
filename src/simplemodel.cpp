@@ -10,6 +10,8 @@ simplemodel::simplemodel() :
 	glEnable(GL_DEPTH_TEST);
 
 	display_list = glGenLists(1);
+
+	c.assign_controller(&contr);
 }
 
 simplemodel::~simplemodel() {
@@ -74,15 +76,31 @@ void simplemodel::render() {
 	record_display_list();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	gluPerspective(
+		90.0, // fov y
+		1.0, // Aspect
+		1.0, // z near
+		100.0 // z far
+	);
+
+	glScalef(1, 1, -1);
+	c.apply();
+
 	glMatrixMode(GL_MODELVIEW);
 
 	glLoadIdentity();
 	glTranslated(0, 0, 10);
 
 	glCallList(display_list);
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
 }
 
 void simplemodel::tick() {
+	c.tick();
 /*
 	angx += 1.0;
 	angy += 0.7;

@@ -11,10 +11,16 @@ gl_simple_perspective_reshaper::gl_simple_perspective_reshaper() {
 gl_simple_perspective_reshaper::~gl_simple_perspective_reshaper() {
 }
 
+void gl_simple_perspective_reshaper::apply() {
+	glMatrixMode(GL_PROJECTION);
+	m.apply();
+}
+
 void gl_simple_perspective_reshaper::reshape(int width, int height) {
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_PROJECTION);
+
 	glLoadIdentity();
 
 	GLdouble aspect = width;
@@ -29,6 +35,8 @@ void gl_simple_perspective_reshaper::reshape(int width, int height) {
 	);
 
 	glScalef(1, 1, -1);
+
+	m.store();
 }
 
 }

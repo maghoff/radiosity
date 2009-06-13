@@ -2,15 +2,20 @@
 #include <typeinfo>
 #include <ymse/gl_box_reshaper.hpp>
 #include <ymse/sdl_core.hpp>
-#include "gl_simple_perspective_reshaper.hpp"
+//#include "gl_simple_perspective_reshaper.hpp"
 #include "simplemodel.hpp"
+#include "wiimote_handler.hpp"
 
 int main(int argc, const char *argv[])
 try {
+// 	wiimote_handler wii;
+
 	ymse::sdl_core c;
 	c.init(argc, argv);
 
-	ymse::gl_simple_perspective_reshaper r;
+// 	ymse::gl_simple_perspective_reshaper r;
+	ymse::gl_box_reshaper r;
+	r.set_box(-1, -1, 1, 1);
 	c.set_reshaper_object(&r);
 
 	simplemodel g;
