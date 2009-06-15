@@ -1,13 +1,12 @@
 add_executable(
 	simplemodel
 	camera.cpp
-	gl_simple_perspective_reshaper.cpp
+	camera_controller.cpp
 	gl_matrix.cpp
+	gl_simple_perspective_reshaper.cpp
+	keyboard_camera_controller.cpp
 	main.cpp
 	simplemodel.cpp
-	wiimote_handler.cpp
-	camera_controller.cpp
-	keyboard_camera_controller.cpp
 	wii_camera_controller.cpp
 )
 
