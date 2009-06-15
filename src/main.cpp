@@ -3,12 +3,9 @@
 #include <ymse/gl_box_reshaper.hpp>
 #include <ymse/sdl_core.hpp>
 #include "simplemodel.hpp"
-#include "wiimote_handler.hpp"
 
 int main(int argc, const char *argv[])
 try {
-// 	wiimote_handler wii;
-
 	ymse::sdl_core c;
 	c.init(argc, argv);
 

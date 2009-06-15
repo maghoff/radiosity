@@ -6,13 +6,13 @@ simplemodel::simplemodel() :
 	angx(0),
 	angy(0),
 	angz(0),
-	contr(kbd)
+	kbd_contr(kbd)
 {
 	glEnable(GL_DEPTH_TEST);
 
 	display_list = glGenLists(1);
 
-	c.assign_controller(&contr);
+	c.assign_controller(&kbd_contr);
 }
 
 simplemodel::~simplemodel() {
@@ -98,6 +98,8 @@ void simplemodel::render() {
 
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
+
+//	wii_contr.pump();
 }
 
 void simplemodel::tick() {

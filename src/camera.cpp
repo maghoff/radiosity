@@ -56,7 +56,7 @@ void camera::tick() {
 	glRotated(d->controller->yaw(), 0, 1, 0);
 	glRotated(d->controller->pitch(), 1, 0, 0);
 
-	glTranslated(d->controller->right(), d->controller->up(), -d->controller->forward());
+	glTranslated(-d->controller->right(), -d->controller->up(), -d->controller->forward());
 
 	d->matrix.apply();
 	d->matrix.store();

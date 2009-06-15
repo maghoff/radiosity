@@ -8,6 +8,7 @@ add_executable(
 	wiimote_handler.cpp
 	camera_controller.cpp
 	keyboard_camera_controller.cpp
+	wii_camera_controller.cpp
 )
 
 set_target_properties(

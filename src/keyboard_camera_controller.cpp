@@ -41,11 +41,11 @@ double keyboard_camera_controller::forward() {
 }
 
 double keyboard_camera_controller::right() {
-	return d->strafe->val() ? 0.07 * d->yaw->val() : 0;
+	return d->strafe->val() ? -0.07 * d->yaw->val() : 0;
 }
 
 double keyboard_camera_controller::up() {
-	return d->strafe->val() ? 0.07 * d->pitch->val() : 0;
+	return d->strafe->val() ? -0.07 * d->pitch->val() : 0;
 }
 
 double keyboard_camera_controller::yaw() {
