@@ -18,6 +18,7 @@ public:
 
 	double forward();
 	double right();
+	double up();
 
 	double yaw();
 	double pitch();

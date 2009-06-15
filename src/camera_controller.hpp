@@ -15,6 +15,7 @@ public:
 
 	virtual double forward() = 0;
 	virtual double right() = 0;
+	virtual double up() = 0;
 
 	virtual double yaw() = 0;
 	virtual double pitch() = 0;
