@@ -1,60 +1,63 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <boost/bind.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
+#include <ymse/keycodes.hpp>
 #include "camera.hpp"
 #include "keyboard_camera_controller.hpp"
-//#include "wii_camera_controller.hpp"
+#include "wii_camera_controller.hpp"
 #include "simplemodel.hpp"
 
 struct simplemodel::impl {
 	unsigned display_list;
 
-	float angx, angy, angz;
-
 	camera c;
 	ymse::bindable_keyboard_handler kbd;
-	keyboard_camera_controller kbd_contr;
-//	wii_camera_controller wii_contr;
 
-	impl();
-	~impl();
+	boost::scoped_ptr<camera_controller> contr;
+
+	void set_kbd_controller(bool);
+	void set_wii_controller(bool);
 };
 
-simplemodel::impl::impl() :
-	angx(0),
-	angy(0),
-	angz(0),
-	kbd_contr(kbd)
-{
+void simplemodel::impl::set_kbd_controller(bool ok) {
+	if (!ok) return;
+	c.assign_controller(0);
+	contr.reset();
+	contr.reset(new keyboard_camera_controller(kbd));
+	c.assign_controller(contr.get());
 }
 
-simplemodel::impl::~impl() {
+void simplemodel::impl::set_wii_controller(bool ok) {
+	if (!ok) return;
+	c.assign_controller(0);
+	contr.reset();
+	contr.reset(new wii_camera_controller());
+	c.assign_controller(contr.get());
 }
 
 simplemodel::simplemodel() :
 	d(new impl)
 {
 	glEnable(GL_DEPTH_TEST);
-
-	d->c.assign_controller(&d->kbd_contr);
-
 	d->display_list = glGenLists(1);
-
 	record_display_list();
+
+	d->kbd.bind(ymse::KEY_1, boost::bind(&impl::set_kbd_controller, d.get(), _1));
+	d->kbd.bind(ymse::KEY_2, boost::bind(&impl::set_wii_controller, d.get(), _1));
+
+	d->set_kbd_controller(true);
 }
 
 simplemodel::~simplemodel() {
 	glDeleteLists(d->display_list, 1);
+
+	d->kbd.unbind(ymse::KEY_1);
+	d->kbd.unbind(ymse::KEY_2);
 }
 
 void simplemodel::record_display_list() {
 	glNewList(d->display_list, GL_COMPILE);
-
-	glPushMatrix();
-
-	glRotated(d->angx, 1, 0, 0);
-	glRotated(d->angy, 0, 1, 0);
-	glRotated(d->angz, 0, 0, 1);
 
 	glBegin(GL_QUADS);
 
@@ -96,8 +99,6 @@ void simplemodel::record_display_list() {
 
 	glEnd();
 
-	glPopMatrix();
-
 	glEndList();
 }
 
@@ -127,7 +128,7 @@ void simplemodel::render() {
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 
-//	d->wii_contr.pump();
+	d->contr->pump();
 }
 
 void simplemodel::tick() {

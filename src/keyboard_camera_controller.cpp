@@ -26,11 +26,11 @@ keyboard_camera_controller::keyboard_camera_controller(
 	d(new impl)
 {
 	using namespace ymse;
-	d->forward.reset(new ymse::opposite_keys(handler, KEY_Z, KEY_A));
-	d->yaw.reset(new ymse::opposite_keys(handler, KEY_RIGHT, KEY_LEFT));
-	d->pitch.reset(new ymse::opposite_keys(handler, KEY_UP, KEY_DOWN));
-	d->roll.reset(new ymse::opposite_keys(handler, KEY_Q, KEY_W));
-	d->strafe.reset(new ymse::key(handler, KEY_LALT));
+	d->forward.reset(new opposite_keys(handler, KEY_Z, KEY_A));
+	d->yaw.reset(new opposite_keys(handler, KEY_RIGHT, KEY_LEFT));
+	d->pitch.reset(new opposite_keys(handler, KEY_UP, KEY_DOWN));
+	d->roll.reset(new opposite_keys(handler, KEY_Q, KEY_W));
+	d->strafe.reset(new key(handler, KEY_LALT));
 }
 
 keyboard_camera_controller::~keyboard_camera_controller() {

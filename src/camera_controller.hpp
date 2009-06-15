@@ -13,6 +13,8 @@ public:
 	camera_controller();
 	virtual ~camera_controller();
 
+	virtual void pump();
+
 	virtual double forward() = 0;
 	virtual double right() = 0;
 	virtual double up() = 0;
