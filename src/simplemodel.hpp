@@ -1,27 +1,16 @@
 #ifndef SIMPLEMODEL_HPP
 #define SIMPLEMODEL_HPP
 
+#include <boost/scoped_ptr.hpp>
 #include <ymse/game.hpp>
-
-#include <ymse/bindable_keyboard_handler.hpp>
-#include "camera.hpp"
-#include "keyboard_camera_controller.hpp"
-//#include "wii_camera_controller.hpp"
 
 namespace ymse {
 class keyboard_handler;
 }
 
 class simplemodel : public ymse::game {
-
-	unsigned display_list;
-
-	float angx, angy, angz;
-
-	camera c;
-	ymse::bindable_keyboard_handler kbd;
-	keyboard_camera_controller kbd_contr;
-//	wii_camera_controller wii_contr;
+	struct impl;
+	boost::scoped_ptr<impl> d;
 
 	void record_display_list();
 

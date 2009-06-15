@@ -1,32 +1,60 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <ymse/bindable_keyboard_handler.hpp>
+#include "camera.hpp"
+#include "keyboard_camera_controller.hpp"
+//#include "wii_camera_controller.hpp"
 #include "simplemodel.hpp"
 
-simplemodel::simplemodel() :
+struct simplemodel::impl {
+	unsigned display_list;
+
+	float angx, angy, angz;
+
+	camera c;
+	ymse::bindable_keyboard_handler kbd;
+	keyboard_camera_controller kbd_contr;
+//	wii_camera_controller wii_contr;
+
+	impl();
+	~impl();
+};
+
+simplemodel::impl::impl() :
 	angx(0),
 	angy(0),
 	angz(0),
 	kbd_contr(kbd)
 {
+}
+
+simplemodel::impl::~impl() {
+}
+
+simplemodel::simplemodel() :
+	d(new impl)
+{
 	glEnable(GL_DEPTH_TEST);
 
-	display_list = glGenLists(1);
+	d->c.assign_controller(&d->kbd_contr);
 
-	c.assign_controller(&kbd_contr);
+	d->display_list = glGenLists(1);
+
+	record_display_list();
 }
 
 simplemodel::~simplemodel() {
-	glDeleteLists(display_list, 1);
+	glDeleteLists(d->display_list, 1);
 }
 
 void simplemodel::record_display_list() {
-	glNewList(display_list, GL_COMPILE);
+	glNewList(d->display_list, GL_COMPILE);
 
 	glPushMatrix();
 
-	glRotated(angx, 1, 0, 0);
-	glRotated(angy, 0, 1, 0);
-	glRotated(angz, 0, 0, 1);
+	glRotated(d->angx, 1, 0, 0);
+	glRotated(d->angy, 0, 1, 0);
+	glRotated(d->angz, 0, 0, 1);
 
 	glBegin(GL_QUADS);
 
@@ -74,7 +102,7 @@ void simplemodel::record_display_list() {
 }
 
 void simplemodel::render() {
-	record_display_list();
+// 	record_display_list();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
@@ -87,31 +115,31 @@ void simplemodel::render() {
 	);
 
 	glScalef(1, 1, -1);
-	c.apply();
+	d->c.apply();
 
 	glMatrixMode(GL_MODELVIEW);
 
 	glLoadIdentity();
 	glTranslated(0, 0, 10);
 
-	glCallList(display_list);
+	glCallList(d->display_list);
 
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 
-//	wii_contr.pump();
+//	d->wii_contr.pump();
 }
 
 void simplemodel::tick() {
-	c.tick();
+	d->c.tick();
 /*
-	angx += 1.0;
-	angy += 0.7;
-	angz += 0.2;
+	d->angx += 1.0;
+	d->angy += 0.7;
+	d->angz += 0.2;
 */
 }
 
 ymse::keyboard_handler* simplemodel::get_keyboard_handler() {
-	return &kbd;
+	return &d->kbd;
 }
 
