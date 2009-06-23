@@ -10,6 +10,7 @@ add_executable(
 	main.cpp
 	multiplier_map.cpp
 	simplemodel.cpp
+	square.cpp
 	wii_camera_controller.cpp
 )
 
