@@ -7,6 +7,7 @@
 #include "keyboard_camera_controller.hpp"
 #include "wii_camera_controller.hpp"
 #include "simplemodel.hpp"
+#include "gl_double_texture.hpp"
 
 struct simplemodel::impl {
 	unsigned display_list;
@@ -59,6 +60,9 @@ simplemodel::~simplemodel() {
 void simplemodel::record_display_list() {
 	glNewList(d->display_list, GL_COMPILE);
 
+	glPushMatrix();
+	glScalef(10., 10., 10.);
+
 	glBegin(GL_QUADS);
 
 	glColor3f(0, 1, 0);
@@ -98,6 +102,8 @@ void simplemodel::record_display_list() {
 	glVertex3f(-1, -1,  1);
 
 	glEnd();
+
+	glPopMatrix();
 
 	glEndList();
 }
