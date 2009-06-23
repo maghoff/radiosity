@@ -1,4 +1,3 @@
-#include <iostream>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <boost/bind.hpp>
@@ -57,8 +56,6 @@ simplemodel::simplemodel() :
 	glBindTexture(GL_TEXTURE_2D, d->img.front_id());
 	generate_multiplier_map(256, 256);
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-	std::cout << "d->img.front_id(): " << d->img.front_id() << std::endl;
 
 	d->display_list = glGenLists(1);
 	record_display_list();
