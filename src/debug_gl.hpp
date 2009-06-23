@@ -108,6 +108,10 @@ inline void check_error() {
 	glPopAttrib(a); \
 	check_error()
 
+#define glBindTexture(a, b) \
+	glBindTexture(a, b); \
+	check_error()
+
 /*
 #define gl(a, b) \
 	gl(a, b); \

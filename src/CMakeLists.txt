@@ -8,6 +8,7 @@ add_executable(
 	gl_simple_perspective_reshaper.cpp
 	keyboard_camera_controller.cpp
 	main.cpp
+	multiplier_map.cpp
 	simplemodel.cpp
 	wii_camera_controller.cpp
 )

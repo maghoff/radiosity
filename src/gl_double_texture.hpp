@@ -1,7 +1,9 @@
 #ifndef SIMPLEMODEL_GL_DOUBLE_TEXTURE_HPP
 #define SIMPLEMODEL_GL_DOUBLE_TEXTURE_HPP
 
-class gl_double_texture {
+#include <boost/noncopyable.hpp>
+
+class gl_double_texture : public boost::noncopyable {
 	unsigned id[2];
 	int front;
 
