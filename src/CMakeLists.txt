@@ -2,6 +2,8 @@ add_executable(
 	simplemodel
 	camera.cpp
 	camera_controller.cpp
+	gl_double_texture.cpp
+	gl_fbo.cpp
 	gl_matrix.cpp
 	gl_simple_perspective_reshaper.cpp
 	keyboard_camera_controller.cpp
@@ -13,7 +15,8 @@ add_executable(
 set_target_properties(
 	simplemodel
 	PROPERTIES
-	COMPILE_FLAGS -ggdb
+	COMPILE_FLAGS "-ggdb -pipe -fvisibility-inlines-hidden"
+	COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
 )
 
 target_link_libraries(
