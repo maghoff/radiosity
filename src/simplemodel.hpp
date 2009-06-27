@@ -14,6 +14,8 @@ class simplemodel : public ymse::game {
 
 	void record_display_list();
 
+	void render_hemicube();
+
 public:
 	simplemodel();
 	~simplemodel();

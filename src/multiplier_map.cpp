@@ -93,7 +93,9 @@ void generate_multiplier_map(int fbo_width, int fbo_height) {
 
 	std::cout <<
 		"sum: " << sum << "\n"
-		"r_sum: " << r_sum << std::endl;
+		"r_sum: " << r_sum << std::endl <<
+		"sum ^ (1/16): " << pow(sum, 1./16.) << std::endl <<
+		"1 / sum ^ (1/16): " << (1. / pow(sum, 1./16.)) << std::endl;
 
 	glTexImage2D(
 		GL_TEXTURE_2D, 0,
