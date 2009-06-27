@@ -22,10 +22,10 @@ set_target_properties(
 target_link_libraries(
 	simplemodel
 	boost_thread
-	cwiid
 	GL
 	glut
 	${YMSE_LIBRARY}
 	${SDL_LIBRARY}
+	${CWIID_LIBRARY}
 )
 
