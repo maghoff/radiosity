@@ -50,6 +50,10 @@ simplemodel::simplemodel() :
 
 	d->set_kbd_controller(true);
 
+	glClampColor(GL_CLAMP_VERTEX_COLOR, GL_FALSE);
+	glClampColor(GL_CLAMP_READ_COLOR, GL_FALSE);
+	glClampColor(GL_CLAMP_FRAGMENT_COLOR, GL_FALSE);
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
 

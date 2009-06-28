@@ -5,7 +5,7 @@
 #include "debug_gl.hpp"
 #include "multiplier_map.hpp"
 
-void generate_multiplier_map(int fbo_width, int fbo_height) {
+double generate_multiplier_map(int fbo_width, int fbo_height) {
 	GLfloat map[fbo_width * fbo_height * 4];
 
 	int qw = fbo_width / 4, qh = fbo_height / 4;
@@ -81,22 +81,6 @@ void generate_multiplier_map(int fbo_width, int fbo_height) {
 		}
 	}
 
-	// Normalize
-	double r_sum = 1. / sum;
-	for (int y=0; y<fbo_height; ++y) {
-		for (int x=0; x<fbo_width; ++x) {
-			for (int c=0; c<4; ++c) {
-//				map[(fbo_width * y + x) * 4 + c] *= r_sum;
-			}
-		}
-	}
-
-	std::cout <<
-		"sum: " << sum << "\n"
-		"r_sum: " << r_sum << std::endl <<
-		"sum ^ (1/16): " << pow(sum, 1./16.) << std::endl <<
-		"1 / sum ^ (1/16): " << (1. / pow(sum, 1./16.)) << std::endl;
-
 	glTexImage2D(
 		GL_TEXTURE_2D, 0,
 		GL_RGBA16F,
@@ -104,4 +88,9 @@ void generate_multiplier_map(int fbo_width, int fbo_height) {
 		GL_FLOAT,
 		map
 	);
+
+	// Normalization is done when summing the texture at a later stage.
+	// The sum to be divided by is returned here:
+
+	return sum;
 }

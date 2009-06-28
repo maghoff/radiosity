@@ -6,6 +6,6 @@
 // (Lambert's cosine law)
 //
 // The texture is put into the currently bound texture by way of glTexImage2D.
-void generate_multiplier_map(int fbo_width, int fbo_height);
+double generate_multiplier_map(int fbo_width, int fbo_height);
 
 #endif
