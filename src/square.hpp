@@ -18,6 +18,7 @@ public:
 	void set_t_direction(float, float, float);
 	void set_u_direction(float, float, float);
 
+	void calculate_incident();
 	void calculate_excident();
 
 	void render();

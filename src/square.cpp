@@ -96,6 +96,46 @@ void whole_surface() {
 	glEnd();
 }
 
+void pix(int x, int y) {
+	const double pw = 1.0 / (double)(width);
+	const double ph = 1.0 / (double)(height);
+
+	double x1 = -1 + x*2.*pw, x2 = x1 + 2.*pw;
+	double y1 = -1 + y*2.*ph, y2 = y1 + 2.*ph;
+
+	glBegin(GL_QUADS);
+	glTexCoord2f( 0,  0); glVertex2f(x1, y1);
+	glTexCoord2f(pw,  0); glVertex2f(x2, y1);
+	glTexCoord2f(pw, ph); glVertex2f(x2, y2);
+	glTexCoord2f( 0, ph); glVertex2f(x1, y2);
+	glEnd();
+}
+
+}
+
+void square::calculate_incident() {
+	d->fbo.render_to(incident());
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
+
+	glViewport(0, 0, width, height);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glColor4f(1, 1, 1, 1);
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+	for (int y=0; y<height; ++y) {
+		for (int x=0; x<width; ++x) {
+			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
+			glColor3f(
+				y % 32 < 16 ? 0.3 : 0.1,
+				x % 32 < 16 ? 0.3 : 0.1,
+				((x^y)&1) ? 0.3 : 0.1
+			);
+			pix(x, y);
+		}
+	}
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }
 
 void square::calculate_excident() {
