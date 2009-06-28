@@ -1,5 +1,6 @@
 #include <GL/gl.h>
 #include "gl_double_texture.hpp"
+#include "gl_texture.hpp"
 #include "square.hpp"
 
 struct square::impl {
@@ -8,7 +9,11 @@ struct square::impl {
 	float tdx, tdy, tdz;
 	float udx, udy, udz;
 
-	gl_double_texture tex;
+	// Properties of the surface:
+	gl_texture emission, reflectance;
+
+	// For shading:
+	gl_texture incident, excident;
 
 	void vertex(float t, float u);
 };
@@ -43,7 +48,7 @@ void square::set_u_direction(float x, float y, float z) {
 }
 
 void square::render() {
-	glBindTexture(GL_TEXTURE_2D, d->tex.front_id());
+	glBindTexture(GL_TEXTURE_2D, d->reflectance.get_id());
 
 	glBegin(GL_QUADS);
 
@@ -58,6 +63,6 @@ void square::render() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-gl_double_texture& square::tex() {
-	return d->tex;
+unsigned square::reflectance() {
+	return d->reflectance.get_id();
 }

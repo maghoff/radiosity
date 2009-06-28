@@ -5,7 +5,7 @@
 #include <ymse/keycodes.hpp>
 #include "camera.hpp"
 #include "debug_gl.hpp"
-#include "gl_double_texture.hpp"
+#include "gl_texture.hpp"
 #include "keyboard_camera_controller.hpp"
 #include "multiplier_map.hpp"
 #include "simplemodel.hpp"
@@ -16,6 +16,7 @@ struct simplemodel::impl {
 	unsigned display_list;
 
 	square sq[6];
+	gl_texture multiplier_map;
 
 	camera c;
 	ymse::bindable_keyboard_handler kbd;
@@ -57,46 +58,49 @@ simplemodel::simplemodel() :
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
 
+	glBindTexture(GL_TEXTURE_2D, d->multiplier_map.get_id());
+	generate_multiplier_map(256, 256);
+
 	d->sq[0].set_color(0, 1, 0);
 	d->sq[0].set_origin(-1, -1, 1);
 	d->sq[0].set_t_direction(2, 0, 0);
 	d->sq[0].set_u_direction(0, 2, 0);
-	glBindTexture(GL_TEXTURE_2D, d->sq[0].tex().front_id());
+	glBindTexture(GL_TEXTURE_2D, d->sq[0].reflectance());
 	generate_multiplier_map(256, 256);
 
 	d->sq[1].set_color(0, 1, 1);
 	d->sq[1].set_origin(-1, -1, -1);
 	d->sq[1].set_t_direction(2, 0, 0);
 	d->sq[1].set_u_direction(0, 2, 0);
-	glBindTexture(GL_TEXTURE_2D, d->sq[1].tex().front_id());
+	glBindTexture(GL_TEXTURE_2D, d->sq[1].reflectance());
 	generate_multiplier_map(256, 256);
 
 	d->sq[2].set_color(1, 0, 0);
 	d->sq[2].set_origin(-1, 1, -1);
 	d->sq[2].set_t_direction(2, 0, 0);
 	d->sq[2].set_u_direction(0, 0, 2);
-	glBindTexture(GL_TEXTURE_2D, d->sq[2].tex().front_id());
+	glBindTexture(GL_TEXTURE_2D, d->sq[2].reflectance());
 	generate_multiplier_map(256, 256);
 
 	d->sq[3].set_color(1, 0, 1);
 	d->sq[3].set_origin(-1, -1, -1);
 	d->sq[3].set_t_direction(2, 0, 0);
 	d->sq[3].set_u_direction(0, 0, 2);
-	glBindTexture(GL_TEXTURE_2D, d->sq[3].tex().front_id());
+	glBindTexture(GL_TEXTURE_2D, d->sq[3].reflectance());
 	generate_multiplier_map(256, 256);
 
 	d->sq[4].set_color(1, 1, 0);
 	d->sq[4].set_origin(1, -1, -1);
 	d->sq[4].set_t_direction(0, 2, 0);
 	d->sq[4].set_u_direction(0, 0, 2);
-	glBindTexture(GL_TEXTURE_2D, d->sq[4].tex().front_id());
+	glBindTexture(GL_TEXTURE_2D, d->sq[4].reflectance());
 	generate_multiplier_map(256, 256);
 
 	d->sq[5].set_color(1, 1, 1);
 	d->sq[5].set_origin(-1, -1, -1);
 	d->sq[5].set_t_direction(0, 2, 0);
 	d->sq[5].set_u_direction(0, 0, 2);
-	glBindTexture(GL_TEXTURE_2D, d->sq[5].tex().front_id());
+	glBindTexture(GL_TEXTURE_2D, d->sq[5].reflectance());
 	generate_multiplier_map(256, 256);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -232,7 +236,7 @@ void simplemodel::render_hemicube() {
 	glLoadIdentity();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glBindTexture(GL_TEXTURE_2D, d->sq[0].tex().front_id());
+	glBindTexture(GL_TEXTURE_2D, d->multiplier_map.get_id());
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ZERO, GL_SRC_ALPHA);

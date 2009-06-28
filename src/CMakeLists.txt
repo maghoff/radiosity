@@ -6,6 +6,7 @@ add_executable(
 	gl_fbo.cpp
 	gl_matrix.cpp
 	gl_simple_perspective_reshaper.cpp
+	gl_texture.cpp
 	keyboard_camera_controller.cpp
 	main.cpp
 	multiplier_map.cpp

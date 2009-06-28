@@ -21,7 +21,7 @@ public:
 
 	void render();
 
-	gl_double_texture& tex();
+	unsigned reflectance();
 };
 
 #endif
