@@ -39,8 +39,20 @@ void square::impl::vertex(float t, float u) {
 square::square() :
 	d(new impl)
 {
+	GLfloat map[width * height * 4];
+	for (int y = 0; y<height; ++y)
+	for (int x = 0; x<width; ++x)
+	for (int c = 0; c<4; ++c)
+		map[y*width*4 + x*4 + c] = 0;
+
+	glBindTexture(GL_TEXTURE_2D, d->emission.get_id());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, map);
+	glBindTexture(GL_TEXTURE_2D, d->reflectance.get_id());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, map);
+	glBindTexture(GL_TEXTURE_2D, d->incident.get_id());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, map);
 	glBindTexture(GL_TEXTURE_2D, d->excident.get_id());
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, map);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -78,6 +90,19 @@ void square::render() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+namespace {
+
+void whole_surface() {
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0); glVertex2f(-1, -1);
+	glTexCoord2f(1, 0); glVertex2f( 1, -1);
+	glTexCoord2f(1, 1); glVertex2f( 1,  1);
+	glTexCoord2f(0, 1); glVertex2f(-1,  1);
+	glEnd();
+}
+
+}
+
 void square::calculate_excident() {
 	// Excident light = incident * reflectance + emission
 
@@ -92,18 +117,26 @@ void square::calculate_excident() {
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
 
 	glViewport(0, 0, width, height);
+	glColor4f(1, 1, 1, 1);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+	glBindTexture(GL_TEXTURE_2D, d->incident.get_id());
+	whole_surface();
+
+	glEnable(GL_BLEND);
+
+	glBlendFunc(GL_ZERO, GL_SRC_COLOR);
+	glBindTexture(GL_TEXTURE_2D, d->reflectance.get_id());
+	whole_surface();
+
+	glBlendFunc(GL_ONE, GL_ONE);
 	glColor4f(d->r, d->g, d->b, 1);
-
 	glBindTexture(GL_TEXTURE_2D, d->emission.get_id());
+	whole_surface();
 
-	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex2f(-1, -1);
-	glTexCoord2f(1, 0); glVertex2f( 1, -1);
-	glTexCoord2f(1, 1); glVertex2f( 1,  1);
-	glTexCoord2f(0, 1); glVertex2f(-1,  1);
-	glEnd();
-
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
 	glEnable(GL_DEPTH_TEST);
