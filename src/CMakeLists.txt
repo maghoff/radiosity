@@ -2,6 +2,8 @@ add_executable(
 	simplemodel
 	camera.cpp
 	camera_controller.cpp
+	circle.cpp
+	flat_color.cpp
 	gl_double_texture.cpp
 	gl_fbo.cpp
 	gl_matrix.cpp

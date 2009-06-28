@@ -14,7 +14,6 @@ public:
 	square();
 	~square();
 
-	void set_color(float, float, float);
 	void set_origin(float, float, float);
 	void set_t_direction(float, float, float);
 	void set_u_direction(float, float, float);

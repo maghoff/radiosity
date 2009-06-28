@@ -4,6 +4,8 @@
 #include <ymse/bindable_keyboard_handler.hpp>
 #include <ymse/keycodes.hpp>
 #include "camera.hpp"
+#include "circle.hpp"
+#include "flat_color.hpp"
 #include "debug_gl.hpp"
 #include "gl_texture.hpp"
 #include "keyboard_camera_controller.hpp"
@@ -61,58 +63,63 @@ simplemodel::simplemodel() :
 	glBindTexture(GL_TEXTURE_2D, d->multiplier_map.get_id());
 	generate_multiplier_map(256, 256);
 
-	d->sq[0].set_color(0, 1, 0);
 	d->sq[0].set_origin(-1, -1, 1);
 	d->sq[0].set_t_direction(2, 0, 0);
 	d->sq[0].set_u_direction(0, 2, 0);
-	glBindTexture(GL_TEXTURE_2D, d->sq[0].emission());
-	generate_multiplier_map(256, 256);
-	d->sq[0].calculate_excident();
+	glBindTexture(GL_TEXTURE_2D, d->sq[0].reflectance());
+	flat_color(256, 256, 0.0, 0.0, 1.0, 1.0);
+// 	glBindTexture(GL_TEXTURE_2D, d->sq[0].emission());
+// 	circle(256, 256, 64, 64, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
 
-	d->sq[1].set_color(0, 1, 1);
 	d->sq[1].set_origin(-1, -1, -1);
 	d->sq[1].set_t_direction(2, 0, 0);
 	d->sq[1].set_u_direction(0, 2, 0);
-	glBindTexture(GL_TEXTURE_2D, d->sq[1].emission());
-	generate_multiplier_map(256, 256);
-	d->sq[1].calculate_excident();
+	glBindTexture(GL_TEXTURE_2D, d->sq[1].reflectance());
+	flat_color(256, 256, 0.0, 1.0, 0.0, 1.0);
+// 	glBindTexture(GL_TEXTURE_2D, d->sq[1].emission());
+// 	circle(256, 256, 64, 64, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
 
-	d->sq[2].set_color(1, 0, 0);
 	d->sq[2].set_origin(-1, 1, -1);
 	d->sq[2].set_t_direction(2, 0, 0);
 	d->sq[2].set_u_direction(0, 0, 2);
+	glBindTexture(GL_TEXTURE_2D, d->sq[2].reflectance());
+	flat_color(256, 256, 0.0, 1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, d->sq[2].emission());
-	generate_multiplier_map(256, 256);
-	d->sq[2].calculate_excident();
+	circle(256, 256, 64, 196, 8, 5.0, 1.0, 1.0, 1.0, 0.0);
 
-	d->sq[3].set_color(1, 0, 1);
 	d->sq[3].set_origin(-1, -1, -1);
 	d->sq[3].set_t_direction(2, 0, 0);
 	d->sq[3].set_u_direction(0, 0, 2);
-	glBindTexture(GL_TEXTURE_2D, d->sq[3].emission());
-	generate_multiplier_map(256, 256);
-	d->sq[3].calculate_excident();
+	glBindTexture(GL_TEXTURE_2D, d->sq[3].reflectance());
+	flat_color(256, 256, 1.0, 0.0, 0.0, 1.0);
+// 	glBindTexture(GL_TEXTURE_2D, d->sq[3].emission());
+// 	circle(256, 256, 64, 64, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
 
-	d->sq[4].set_color(1, 1, 0);
 	d->sq[4].set_origin(1, -1, -1);
 	d->sq[4].set_t_direction(0, 2, 0);
 	d->sq[4].set_u_direction(0, 0, 2);
-	glBindTexture(GL_TEXTURE_2D, d->sq[4].emission());
-	generate_multiplier_map(256, 256);
-	d->sq[4].calculate_excident();
+	glBindTexture(GL_TEXTURE_2D, d->sq[4].reflectance());
+	flat_color(256, 256, 1.0, 0.0, 1.0, 1.0);
+// 	glBindTexture(GL_TEXTURE_2D, d->sq[4].emission());
+// 	circle(256, 256, 64, 64, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
 
-	d->sq[5].set_color(1, 1, 1);
 	d->sq[5].set_origin(-1, -1, -1);
 	d->sq[5].set_t_direction(0, 2, 0);
 	d->sq[5].set_u_direction(0, 0, 2);
-	glBindTexture(GL_TEXTURE_2D, d->sq[5].emission());
-	generate_multiplier_map(256, 256);
-	d->sq[5].calculate_excident();
+	glBindTexture(GL_TEXTURE_2D, d->sq[5].reflectance());
+	flat_color(256, 256, 1.0, 1.0, 0.0, 1.0);
+// 	glBindTexture(GL_TEXTURE_2D, d->sq[5].emission());
+// 	circle(256, 256, 64, 64, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	d->display_list = glGenLists(1);
 	record_display_list();
+
+	calculate_excident();
+
+	calculate_incident();
+	calculate_excident();
 }
 
 simplemodel::~simplemodel() {
@@ -120,6 +127,18 @@ simplemodel::~simplemodel() {
 
 	d->kbd.unbind(ymse::KEY_1);
 	d->kbd.unbind(ymse::KEY_2);
+}
+
+void simplemodel::calculate_incident() {
+	for (int i=0; i<6; ++i) {
+		glBindTexture(GL_TEXTURE_2D, d->sq[i].incident());
+		flat_color(256, 256, 0.3, 0.3, 0.3, 1.0);
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void simplemodel::calculate_excident() {
+	for (int i=0; i<6; ++i) d->sq[i].calculate_excident();
 }
 
 void simplemodel::record_display_list() {

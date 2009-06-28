@@ -9,7 +9,6 @@ namespace {
 }
 
 struct square::impl {
-	float r, g, b;
 	float ox, oy, oz;
 	float tdx, tdy, tdz;
 	float udx, udy, udz;
@@ -57,10 +56,6 @@ square::square() :
 }
 
 square::~square() {
-}
-
-void square::set_color(float r, float g, float b) {
-	d->r = r; d->g = g; d->b = b;
 }
 
 void square::set_origin(float x, float y, float z) {
@@ -132,7 +127,6 @@ void square::calculate_excident() {
 	whole_surface();
 
 	glBlendFunc(GL_ONE, GL_ONE);
-	glColor4f(d->r, d->g, d->b, 1);
 	glBindTexture(GL_TEXTURE_2D, d->emission.get_id());
 	whole_surface();
 

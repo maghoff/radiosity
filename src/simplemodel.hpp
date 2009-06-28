@@ -12,6 +12,9 @@ class simplemodel : public ymse::game {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
+	void calculate_incident();
+	void calculate_excident();
+
 	void record_display_list();
 
 	void render_hemicube();
