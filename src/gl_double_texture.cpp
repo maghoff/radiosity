@@ -40,7 +40,7 @@ gl_double_texture::gl_double_texture() :
 }
 
 gl_double_texture::~gl_double_texture() {
-// 	glDeleteTextures(2, id); //< Seems to provoke an error..?
+	glDeleteTextures(2, id);
 }
 
 int gl_double_texture::front_id() const {
