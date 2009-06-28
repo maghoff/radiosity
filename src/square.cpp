@@ -1,7 +1,12 @@
 #include <GL/gl.h>
 #include "gl_double_texture.hpp"
+#include "gl_fbo.hpp"
 #include "gl_texture.hpp"
 #include "square.hpp"
+
+namespace {
+	const int width = 256, height = 256;
+}
 
 struct square::impl {
 	float r, g, b;
@@ -15,8 +20,16 @@ struct square::impl {
 	// For shading:
 	gl_texture incident, excident;
 
+	gl_fbo fbo;
+
+	impl();
 	void vertex(float t, float u);
 };
+
+square::impl::impl() :
+	fbo(width, height)
+{
+}
 
 void square::impl::vertex(float t, float u) {
 	glTexCoord2f(t, u);
@@ -26,6 +39,9 @@ void square::impl::vertex(float t, float u) {
 square::square() :
 	d(new impl)
 {
+	glBindTexture(GL_TEXTURE_2D, d->excident.get_id());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 square::~square() {
@@ -48,11 +64,10 @@ void square::set_u_direction(float x, float y, float z) {
 }
 
 void square::render() {
-	glBindTexture(GL_TEXTURE_2D, d->reflectance.get_id());
+	glBindTexture(GL_TEXTURE_2D, d->excident.get_id());
 
 	glBegin(GL_QUADS);
 
-	glColor4f(d->r, d->g, d->b, 1);
 	d->vertex(0, 0);
 	d->vertex(1, 0);
 	d->vertex(1, 1);
@@ -63,6 +78,43 @@ void square::render() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-unsigned square::reflectance() {
-	return d->reflectance.get_id();
+void square::calculate_excident() {
+	// Excident light = incident * reflectance + emission
+
+	glDisable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	d->fbo.render_to(d->excident.get_id());
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
+
+	glViewport(0, 0, width, height);
+
+	glColor4f(d->r, d->g, d->b, 1);
+
+	glBindTexture(GL_TEXTURE_2D, d->emission.get_id());
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0); glVertex2f(-1, -1);
+	glTexCoord2f(1, 0); glVertex2f( 1, -1);
+	glTexCoord2f(1, 1); glVertex2f( 1,  1);
+	glTexCoord2f(0, 1); glVertex2f(-1,  1);
+	glEnd();
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+	glEnable(GL_DEPTH_TEST);
 }
+
+#define EXPOSE(t) \
+	unsigned square::t() { \
+		return d->t.get_id(); \
+	}
+
+EXPOSE(emission)
+EXPOSE(reflectance)
+EXPOSE(incident)
+EXPOSE(excident)

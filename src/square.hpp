@@ -19,9 +19,14 @@ public:
 	void set_t_direction(float, float, float);
 	void set_u_direction(float, float, float);
 
+	void calculate_excident();
+
 	void render();
 
+	unsigned emission();
 	unsigned reflectance();
+	unsigned incident();
+	unsigned excident();
 };
 
 #endif
