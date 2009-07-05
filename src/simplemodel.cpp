@@ -12,6 +12,7 @@
 #include "hemicube.hpp"
 #include "keyboard_camera_controller.hpp"
 #include "multiplier_map.hpp"
+#include "reduce.hpp"
 #include "simplemodel.hpp"
 #include "square.hpp"
 #include "wii_camera_controller.hpp"
@@ -191,25 +192,41 @@ void simplemodel::render() {
 
 	glMatrixMode(GL_PROJECTION);
 	d->c.apply();
+	glEnable(GL_DEPTH_TEST);
 	render_hemicube(d->display_list, d->multiplier_map.get_id());
-
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
 	d->buf.flip();
 
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	reduce(512, 512, d->buf, d->multiplier_map_sum);
+	d->buf.flip();
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	glPopAttrib();
-//	glViewport();
+	glClearColor(0.f, 0.f, 0.f, 0.f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D, d->buf.front_tex_id());
 
+	double f = 1./512.;
 	glBegin(GL_QUADS);
-	glTexCoord2f( 0,  0); glVertex2f(-1, -1);
-	glTexCoord2f( 1,  0); glVertex2f( 1, -1);
-	glTexCoord2f( 1,  1); glVertex2f( 1,  1);
-	glTexCoord2f( 0,  1); glVertex2f(-1,  1);
+	glTexCoord2f(0, 0); glVertex2f(-1, -1);
+	glTexCoord2f(f, 0); glVertex2f( 1, -1);
+	glTexCoord2f(f, f); glVertex2f( 1,  1);
+	glTexCoord2f(0, f); glVertex2f(-1,  1);
 	glEnd();
 
 	d->contr->pump();

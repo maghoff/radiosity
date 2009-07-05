@@ -1,9 +1,11 @@
 #ifndef RADIOSITY_REDUCE_HPP
 #define RADIOSITY_REDUCE_HPP
 
-class gl_fbo;
-class gl_texture;
+class gl_double_buffer;
 
-void reduce(int w, int h, gl_fbo& f1, gl_fbo& f2, gl_texture& t1, gl_texture& t2);
+// Calculate the sum of the current front buffer in the given double buffer,
+// divided by the divisor. The division is carried out so as to maintain
+// numerical stability.
+void reduce(int w, int h, gl_double_buffer&, double divisor);
 
 #endif

@@ -1,82 +1,79 @@
 #include <algorithm>
+#include <cmath>
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include <GL/glu.h>
 #include "debug_gl.hpp"
-#include "gl_fbo.hpp"
-#include "gl_texture.hpp"
+#include "gl_double_buffer.hpp"
 #include "reduce.hpp"
 
 namespace {
 
-void reducew(int w, GLuint fbos[], GLuint texs[], int& read) {
-	GLfloat wf = 1.f;
-
-	int write = 1 - read;
-
-	for ( ; w > 1; w /= 2) {
-		wf /= 2.f;
-
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbos[write]);
-		glBindTexture(GL_TEXTURE_2D, texs[read]);
-
-		glDisable(GL_BLEND);
-
-		glBegin(GL_QUADS);
-		glTexCoord2f(0.f, 0.f); glVertex3f(0.0f, 0.0f, -0.5f);
-		glTexCoord2f( wf, 0.f); glVertex3f(  wf, 0.0f, -0.5f);
-		glTexCoord2f( wf, 1.f); glVertex3f(  wf, 1.0f, -0.5f);
-		glTexCoord2f(0.f, 1.f); glVertex3f(0.0f, 1.0f, -0.5f);
-		glEnd();
-
-		glEnable(GL_BLEND);
-
-		glBegin(GL_QUADS);
-		glTexCoord2f(    wf, 0.0f); glVertex3f(0.0f, 0.0f, -0.5f+0.5f*wf);
-		glTexCoord2f(2.f*wf, 0.0f); glVertex3f(  wf, 0.0f, -0.5f+0.5f*wf);
-		glTexCoord2f(2.f*wf, 1.0f); glVertex3f(  wf, 1.0f, -0.5f+0.5f*wf);
-		glTexCoord2f(    wf, 1.0f); glVertex3f(0.0f, 1.0f, -0.5f+0.5f*wf);
-		glEnd();
-
-		std::swap(write, read);
-	}
-}
-
-void reduceh(int h, GLuint fbos[], GLuint texs[], int& read) {
+void reduceh(int, int h, gl_double_buffer& buf) {
 	GLfloat hf = 1.f;
-
-	int write = 1 - read;
 
 	for ( ; h > 1; h /= 2) {
 		hf /= 2.f;
 
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbos[write]);
-		glBindTexture(GL_TEXTURE_2D, texs[read]);
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, buf.back_fbo_id());
+		glBindTexture(GL_TEXTURE_2D, buf.front_tex_id());
 
 		glDisable(GL_BLEND);
 
 		glBegin(GL_QUADS);
-		glTexCoord2f(0.f, 0.f); glVertex3f(0.0f, 0.0f, -0.5f);
-		glTexCoord2f(1.f, 0.f); glVertex3f(1.0f, 0.0f, -0.5f);
-		glTexCoord2f(1.f,  hf); glVertex3f(1.0f,   hf, -0.5f);
-		glTexCoord2f(0.f,  hf); glVertex3f(0.0f,   hf, -0.5f);
+		glTexCoord2f(0.f, 0.f); glVertex2f(0.0f, 0.0f);
+		glTexCoord2f(1.f, 0.f); glVertex2f(1.0f, 0.0f);
+		glTexCoord2f(1.f,  hf); glVertex2f(1.0f,   hf);
+		glTexCoord2f(0.f,  hf); glVertex2f(0.0f,   hf);
 		glEnd();
 
 		glEnable(GL_BLEND);
 
 		glBegin(GL_QUADS);
-		glTexCoord2f(0.f,     hf); glVertex3f(0.0f, 0.0f, -0.5f);
-		glTexCoord2f(1.f,     hf); glVertex3f(1.0f, 0.0f, -0.5f);
-		glTexCoord2f(1.f, 2.f*hf); glVertex3f(1.0f,   hf, -0.5f);
-		glTexCoord2f(0.f, 2.f*hf); glVertex3f(0.0f,   hf, -0.5f);
+		glTexCoord2f(0.f,     hf); glVertex2f(0.0f, 0.0f);
+		glTexCoord2f(1.f,     hf); glVertex2f(1.0f, 0.0f);
+		glTexCoord2f(1.f, 2.f*hf); glVertex2f(1.0f,   hf);
+		glTexCoord2f(0.f, 2.f*hf); glVertex2f(0.0f,   hf);
 		glEnd();
 
-		std::swap(write, read);
+		buf.flip();
+	}
+}
+
+void reducew(int w, int h, gl_double_buffer& buf) {
+	GLfloat wf = 1.f;
+	GLfloat hf = 1.f / h;
+
+	for ( ; w > 1; w /= 2) {
+		wf /= 2.f;
+
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, buf.back_fbo_id());
+		glBindTexture(GL_TEXTURE_2D, buf.front_tex_id());
+
+		glDisable(GL_BLEND);
+
+		glBegin(GL_QUADS);
+		glTexCoord2f(0.f, 0.f); glVertex2f(0.0f, 0.0f);
+		glTexCoord2f( wf, 0.f); glVertex2f(  wf, 0.0f);
+		glTexCoord2f( wf,  hf); glVertex2f(  wf,   hf);
+		glTexCoord2f(0.f,  hf); glVertex2f(0.0f,   hf);
+		glEnd();
+
+		glEnable(GL_BLEND);
+
+		glBegin(GL_QUADS);
+		glTexCoord2f(    wf, 0.0f); glVertex2f(0.0f, 0.0f);
+		glTexCoord2f(2.f*wf, 0.0f); glVertex2f(  wf, 0.0f);
+		glTexCoord2f(2.f*wf,   hf); glVertex2f(  wf,   hf);
+		glTexCoord2f(    wf,   hf); glVertex2f(0.0f,   hf);
+		glEnd();
+
+		buf.flip();
 	}
 }
 
 }
-
+/*
 void reduce(int w, int h, gl_fbo& f1, gl_fbo& f2, gl_texture& t1, gl_texture& t2) {
 	glTranslatef(-1.f, -1.f, 0.f);
 	glScalef(2.f, 2.f, 1.f);
@@ -108,4 +105,24 @@ void reduce(int w, int h, gl_fbo& f1, gl_fbo& f2, gl_texture& t1, gl_texture& t2
 	reducew(w, fbos, texs, read);
 
 	glDisable(GL_BLEND);
+}
+*/
+void reduce(int w, int h, gl_double_buffer& buf, double divisor) {
+	glTranslatef(-1.f, -1.f, 0.f);
+	glScalef(2.f, 2.f, 1.f);
+
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
+	glBlendFunc(GL_ONE, GL_ONE);
+
+	int halvings = log2(w) + log2(h);
+	double fact = 1./pow(divisor, 1.0/(double)halvings);
+	glColor4f(fact, fact, fact, fact);
+
+	glViewport(0, 0, w, h);
+
+	reduceh(w, h, buf);
+	reducew(w, h, buf);
+
+	check_error();
 }
