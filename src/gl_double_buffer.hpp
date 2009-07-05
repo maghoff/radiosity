@@ -2,13 +2,11 @@
 #define SIMPLEMODEL_GL_DOUBLE_BUFFER_HPP
 
 #include <boost/noncopyable.hpp>
+#include <boost/scoped_ptr.hpp>
 
 class gl_double_buffer : public boost::noncopyable {
-	unsigned id[2];
-	int front;
-
-	void set_options();
-	void set_options_all();
+	struct impl;
+	boost::scoped_ptr<impl> d;
 
 public:
 	gl_double_buffer();
