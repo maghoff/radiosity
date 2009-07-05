@@ -4,14 +4,25 @@
 #include "debug_gl.hpp"
 #include "gl_fbo.hpp"
 
+void gl_fbo::init() {
+	glGenRenderbuffersEXT(1, &depthbuffer);
+	glGenFramebuffersEXT(1, &id);
+}
+
+gl_fbo::gl_fbo() {
+	init();
+}
+
 gl_fbo::gl_fbo(int width, int height) {
+	init();
+}
+
+void gl_fbo::set_size(int width, int height) {
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-	glGenRenderbuffersEXT(1, &depthbuffer);
 	glBindRenderbufferEXT(GL_RENDERBUFFER, depthbuffer);
 	glRenderbufferStorageEXT(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
 
-	glGenFramebuffersEXT(1, &id);
 	assert(id != 0);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, id);
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthbuffer);

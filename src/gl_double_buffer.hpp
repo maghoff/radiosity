@@ -12,8 +12,8 @@ public:
 	gl_double_buffer();
 	~gl_double_buffer();
 
-	int front_id() const;
-	int back_id() const;
+	int front_tex_id() const;
+	int back_fbo_id() const;
 
 	void flip();
 };
