@@ -1,5 +1,4 @@
 #include <GL/gl.h>
-#include "gl_double_texture.hpp"
 #include "gl_fbo.hpp"
 #include "gl_texture.hpp"
 #include "square.hpp"
@@ -113,7 +112,13 @@ void pix(int x, int y) {
 
 }
 
-void square::calculate_incident() {
+void square::calculate_incident(unsigned scene_display_list) {
+
+// 	glMatrixMode(GL_PROJECTION);
+// 	d->c.apply();
+// 	render_hemicube(d->display_list, d->multiplier_map.get_id());
+
+
 	d->fbo.render_to(incident());
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
 

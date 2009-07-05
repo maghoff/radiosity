@@ -4,7 +4,7 @@ add_executable(
 	camera_controller.cpp
 	circle.cpp
 	flat_color.cpp
-	gl_double_texture.cpp
+	gl_double_buffer.cpp
 	gl_fbo.cpp
 	gl_matrix.cpp
 	gl_simple_perspective_reshaper.cpp
@@ -13,6 +13,7 @@ add_executable(
 	keyboard_camera_controller.cpp
 	main.cpp
 	multiplier_map.cpp
+	reduce.cpp
 	simplemodel.cpp
 	square.cpp
 	wii_camera_controller.cpp

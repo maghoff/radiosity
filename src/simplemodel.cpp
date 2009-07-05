@@ -86,7 +86,7 @@ simplemodel::simplemodel() :
 	glBindTexture(GL_TEXTURE_2D, d->sq[2].reflectance());
 	flat_color(256, 256, 0.3, 1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, d->sq[2].emission());
-	circle(256, 256, 64, 196, 8, 5.0, 1.0, 1.0, 1.0, 0.0);
+	circle(256, 256, 64, 196, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
 
 	d->sq[3].set_origin(-1, -1, -1);
 	d->sq[3].set_t_direction(2, 0, 0);
@@ -131,7 +131,7 @@ simplemodel::~simplemodel() {
 }
 
 void simplemodel::calculate_incident() {
-	for (int i=0; i<6; ++i) d->sq[i].calculate_incident();
+	for (int i=0; i<6; ++i) d->sq[i].calculate_incident(d->display_list);
 }
 
 void simplemodel::calculate_excident() {

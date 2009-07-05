@@ -1,6 +1,6 @@
 #include <GL/gl.h>
 #include "debug_gl.hpp"
-#include "gl_double_texture.hpp"
+#include "gl_double_buffer.hpp"
 
 void gl_double_texture::set_options() {
 	// select modulate to mix texture with color for shading
