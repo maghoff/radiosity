@@ -2,7 +2,7 @@
 #include "debug_gl.hpp"
 #include "gl_double_buffer.hpp"
 
-void gl_double_texture::set_options() {
+void gl_double_buffer::set_options() {
 	// select modulate to mix texture with color for shading
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
@@ -24,7 +24,7 @@ void gl_double_texture::set_options() {
 
 }
 
-void gl_double_texture::set_options_all() {
+void gl_double_buffer::set_options_all() {
 	for (int i=0; i<2; ++i) {
 		glBindTexture(GL_TEXTURE_2D, id[i]);
 		set_options();
@@ -32,26 +32,26 @@ void gl_double_texture::set_options_all() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-gl_double_texture::gl_double_texture() :
+gl_double_buffer::gl_double_buffer() :
 	front(0)
 {
 	glGenTextures(2, id);
 	set_options_all();
 }
 
-gl_double_texture::~gl_double_texture() {
+gl_double_buffer::~gl_double_buffer() {
 	glDeleteTextures(2, id);
 }
 
-int gl_double_texture::front_id() const {
+int gl_double_buffer::front_id() const {
 	return id[front];
 }
 
-int gl_double_texture::back_id() const {
+int gl_double_buffer::back_id() const {
 	return id[front ^ 1];
 }
 
-void gl_double_texture::flip() {
+void gl_double_buffer::flip() {
 	front ^= 1;
 }
 
