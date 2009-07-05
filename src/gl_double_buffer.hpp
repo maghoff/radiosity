@@ -12,6 +12,8 @@ public:
 	gl_double_buffer();
 	~gl_double_buffer();
 
+	void set_size(unsigned width, unsigned height);
+
 	int front_tex_id() const;
 	int back_fbo_id() const;
 

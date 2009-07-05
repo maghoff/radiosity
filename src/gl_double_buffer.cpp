@@ -14,19 +14,19 @@ gl_double_buffer::gl_double_buffer() :
 	d(new impl)
 {
 	d->front = 0;
+}
 
-	const unsigned width = 256, height = 256;
+gl_double_buffer::~gl_double_buffer() {
+}
 
+void gl_double_buffer::set_size(unsigned width, unsigned height) {
 	for (int i=0; i<2; ++i) {
 		glBindTexture(GL_TEXTURE_2D, d->tex[i].get_id());
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, 0);
 
-		d->fbo[i].set_size(256, 256);
+		d->fbo[i].set_size(width, height);
 		d->fbo[i].render_to(d->tex[i].get_id());
 	}
-}
-
-gl_double_buffer::~gl_double_buffer() {
 }
 
 int gl_double_buffer::front_tex_id() const {

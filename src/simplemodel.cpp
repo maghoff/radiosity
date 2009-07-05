@@ -7,6 +7,7 @@
 #include "circle.hpp"
 #include "flat_color.hpp"
 #include "debug_gl.hpp"
+#include "gl_double_buffer.hpp"
 #include "gl_texture.hpp"
 #include "hemicube.hpp"
 #include "keyboard_camera_controller.hpp"
@@ -20,6 +21,9 @@ struct simplemodel::impl {
 
 	square sq[6];
 	gl_texture multiplier_map;
+	double multiplier_map_sum;
+
+	gl_double_buffer buf;
 
 	camera c;
 	ymse::bindable_keyboard_handler kbd;
@@ -62,7 +66,7 @@ simplemodel::simplemodel() :
 	glEnable(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, d->multiplier_map.get_id());
-	generate_multiplier_map(256, 256);
+	d->multiplier_map_sum = generate_multiplier_map(256, 256);
 
 	d->sq[0].set_origin(-1, -1, 1);
 	d->sq[0].set_t_direction(2, 0, 0);
@@ -113,6 +117,8 @@ simplemodel::simplemodel() :
 // 	circle(256, 256, 64, 64, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	d->buf.set_size(512, 512);
 
 	d->display_list = glGenLists(1);
 	record_display_list();
@@ -179,9 +185,32 @@ void simplemodel::render() {
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 */
+
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->buf.back_fbo_id());
+
 	glMatrixMode(GL_PROJECTION);
 	d->c.apply();
 	render_hemicube(d->display_list, d->multiplier_map.get_id());
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+	d->buf.flip();
+
+	glPopAttrib();
+//	glViewport();
+
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+	glBindTexture(GL_TEXTURE_2D, d->buf.front_tex_id());
+
+	glBegin(GL_QUADS);
+	glTexCoord2f( 0,  0); glVertex2f(-1, -1);
+	glTexCoord2f( 1,  0); glVertex2f( 1, -1);
+	glTexCoord2f( 1,  1); glVertex2f( 1,  1);
+	glTexCoord2f( 0,  1); glVertex2f(-1,  1);
+	glEnd();
 
 	d->contr->pump();
 }
