@@ -67,6 +67,19 @@ void square::set_t_direction(float x, float y, float z) {
 
 void square::set_u_direction(float x, float y, float z) {
 	d->udx=x; d->udy=y; d->udz=z;
+
+/*	double nx, ny, nz;
+	nx = d->udy*d->tdz - d->udz*d->tdy;
+	ny = d->udz*d->tdx - d->udx*d->tdz;
+	nz = d->udx*d->tdy - d->udy*d->tdx;
+
+	nx /= 20.;
+	ny /= 20.;
+	nz /= 20.;
+
+	d->ox += nx;
+	d->oy += ny;
+	d->oz += nz;*/
 }
 
 void square::render() {
@@ -132,10 +145,11 @@ void square::calculate_incident(unsigned scene_display_list) {
 	for (int y=0; y<height; ++y) {
 		for (int x=0; x<width; ++x) {
 			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
-			glColor3f(
+			glColor4f(
 				y % 32 < 16 ? 0.3 : 0.1,
 				x % 32 < 16 ? 0.3 : 0.1,
-				((x^y)&1) ? 0.3 : 0.1
+				((x^y)&1) ? 0.3 : 0.1,
+				1
 			);
 			pix(x, y);
 		}

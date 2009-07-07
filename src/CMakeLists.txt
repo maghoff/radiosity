@@ -4,6 +4,7 @@ add_executable(
 	camera_controller.cpp
 	circle.cpp
 	flat_color.cpp
+	get_incident_light.cpp
 	gl_double_buffer.cpp
 	gl_fbo.cpp
 	gl_matrix.cpp
