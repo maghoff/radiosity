@@ -7,7 +7,7 @@
 #include "circle.hpp"
 #include "debug_gl.hpp"
 #include "flat_color.hpp"
-#include "get_incident_light.hpp"
+//#include "get_incident_light.hpp"
 #include "gl_double_buffer.hpp"
 #include "gl_texture.hpp"
 #include "keyboard_camera_controller.hpp"
@@ -15,6 +15,7 @@
 #include "simplemodel.hpp"
 #include "square.hpp"
 #include "wii_camera_controller.hpp"
+
 
 struct simplemodel::impl {
 	unsigned display_list;
@@ -72,7 +73,7 @@ simplemodel::simplemodel() :
 	d->sq[0].set_t_direction(2, 0, 0);
 	d->sq[0].set_u_direction(0, 2, 0);
 	glBindTexture(GL_TEXTURE_2D, d->sq[0].reflectance());
-	flat_color(256, 256, 1.0, 1.0, 1.0, 1.0);
+	flat_color(64, 64, 1.0, 1.0, 1.0, 1.0);
 //	flat_color(256, 256, 0.3, 0.3, 1.0, 1.0);
 // 	glBindTexture(GL_TEXTURE_2D, d->sq[0].emission());
 // 	circle(256, 256, 64, 64, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
@@ -81,7 +82,7 @@ simplemodel::simplemodel() :
 	d->sq[1].set_t_direction(-2, 0, 0);
 	d->sq[1].set_u_direction( 0, 2, 0);
 	glBindTexture(GL_TEXTURE_2D, d->sq[1].reflectance());
-	flat_color(256, 256, 1.0, 1.0, 1.0, 1.0);
+	flat_color(64, 64, 1.0, 1.0, 1.0, 1.0);
 //	flat_color(256, 256, 0.3, 1.0, 0.3, 1.0);
 // 	glBindTexture(GL_TEXTURE_2D, d->sq[1].emission());
 // 	circle(256, 256, 64, 64, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
@@ -90,16 +91,16 @@ simplemodel::simplemodel() :
 	d->sq[2].set_t_direction(-2, 0, 0);
 	d->sq[2].set_u_direction( 0, 0, 2);
 	glBindTexture(GL_TEXTURE_2D, d->sq[2].reflectance());
-	flat_color(256, 256, 1.0, 1.0, 1.0, 1.0);
+	flat_color(64, 64, 1.0, 1.0, 1.0, 1.0);
 //	flat_color(256, 256, 0.3, 1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, d->sq[2].emission());
-	circle(256, 256, 64, 196, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
+	circle(64, 64, 16, 48, 64, 2.0, 5.0, 5.0, 5.0, 0.0);
 
 	d->sq[3].set_origin(-1, -1, -1);
 	d->sq[3].set_t_direction(2, 0, 0);
 	d->sq[3].set_u_direction(0, 0, 2);
 	glBindTexture(GL_TEXTURE_2D, d->sq[3].reflectance());
-	flat_color(256, 256, 1.0, 0.3, 0.3, 1.0);
+	flat_color(64, 64, 1.0, 0.3, 0.3, 1.0);
 // 	glBindTexture(GL_TEXTURE_2D, d->sq[3].emission());
 // 	circle(256, 256, 64, 64, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
 
@@ -107,7 +108,7 @@ simplemodel::simplemodel() :
 	d->sq[4].set_t_direction(0, 2, 0);
 	d->sq[4].set_u_direction(0, 0, 2);
 	glBindTexture(GL_TEXTURE_2D, d->sq[4].reflectance());
-	flat_color(256, 256, 1.0, 1.0, 1.0, 1.0);
+	flat_color(64, 64, 1.0, 1.0, 1.0, 1.0);
 //	flat_color(256, 256, 1.0, 0.3, 1.0, 1.0);
 // 	glBindTexture(GL_TEXTURE_2D, d->sq[4].emission());
 // 	circle(256, 256, 64, 64, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
@@ -116,22 +117,24 @@ simplemodel::simplemodel() :
 	d->sq[5].set_t_direction(0, -2, 0);
 	d->sq[5].set_u_direction(0,  0, 2);
 	glBindTexture(GL_TEXTURE_2D, d->sq[5].reflectance());
-	flat_color(256, 256, 1.0, 1.0, 1.0, 1.0);
+	flat_color(64, 64, 1.0, 1.0, 1.0, 1.0);
 //	flat_color(256, 256, 1.0, 1.0, 0.3, 1.0);
 // 	glBindTexture(GL_TEXTURE_2D, d->sq[5].emission());
 // 	circle(256, 256, 64, 64, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	d->buf.set_size(512, 512);
+	d->buf.set_size(64, 64);
 
 	d->display_list = glGenLists(1);
 	record_display_list();
 
 	calculate_excident();
 
+	for (int i=0; i<12; ++i) {
 	calculate_incident();
 	calculate_excident();
+	}
 }
 
 simplemodel::~simplemodel() {
@@ -142,7 +145,15 @@ simplemodel::~simplemodel() {
 }
 
 void simplemodel::calculate_incident() {
-	for (int i=0; i<6; ++i) d->sq[i].calculate_incident(d->display_list);
+	for (int i=0; i<6; ++i) {
+		d->sq[i].calculate_incident(
+			64,
+			d->buf,
+			d->display_list,
+			d->multiplier_map.get_id(),
+			d->multiplier_map_sum
+		);
+	}
 }
 
 void simplemodel::calculate_excident() {
@@ -166,7 +177,7 @@ void simplemodel::record_display_list() {
 
 void simplemodel::render() {
 // 	record_display_list();
-/*
+
 	glDisable(GL_BLEND);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -190,14 +201,14 @@ void simplemodel::render() {
 
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
-*/
 
 
+/*
 	glMatrixMode(GL_PROJECTION);
 	d->c.apply();
 
 	const unsigned dim = 512;
-	get_incident_light(dim, d->buf, d->display_list, d->multiplier_map.get_id(), d->multiplier_map_sum);
+	get_incident_light(dim, d->buf, d->display_list, d->multiplier_map.get_id(), d->multiplier_map_sum, 1.0);
 
 	glClearColor(0.f, 0.f, 0.f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -219,7 +230,7 @@ void simplemodel::render() {
 	glTexCoord2f(f, f); glVertex2f( 1,  1);
 	glTexCoord2f(0, f); glVertex2f(-1,  1);
 	glEnd();
-
+*/
 
 	d->contr->pump();
 }

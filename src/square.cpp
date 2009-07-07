@@ -1,10 +1,14 @@
+#include <iostream>
 #include <GL/gl.h>
+#include <GL/glu.h>
+#include "get_incident_light.hpp"
+#include "gl_double_buffer.hpp"
 #include "gl_fbo.hpp"
 #include "gl_texture.hpp"
 #include "square.hpp"
 
 namespace {
-	const int width = 256, height = 256;
+	const int width = 64, height = 64;
 }
 
 struct square::impl {
@@ -67,19 +71,6 @@ void square::set_t_direction(float x, float y, float z) {
 
 void square::set_u_direction(float x, float y, float z) {
 	d->udx=x; d->udy=y; d->udz=z;
-
-/*	double nx, ny, nz;
-	nx = d->udy*d->tdz - d->udz*d->tdy;
-	ny = d->udz*d->tdx - d->udx*d->tdz;
-	nz = d->udx*d->tdy - d->udy*d->tdx;
-
-	nx /= 20.;
-	ny /= 20.;
-	nz /= 20.;
-
-	d->ox += nx;
-	d->oy += ny;
-	d->oz += nz;*/
 }
 
 void square::render() {
@@ -125,16 +116,62 @@ void pix(int x, int y) {
 
 }
 
-void square::calculate_incident(unsigned scene_display_list) {
+/*	double nx, ny, nz;
+	nx = d->udy*d->tdz - d->udz*d->tdy;
+	ny = d->udz*d->tdx - d->udx*d->tdz;
+	nz = d->udx*d->tdy - d->udy*d->tdx;
+
+	nx /= 20.;
+	ny /= 20.;
+	nz /= 20.;
+
+	d->ox += nx;
+	d->oy += ny;
+	d->oz += nz;*/
+
+/*
+	glMatrixMode(GL_PROJECTION);
+	d->c.apply();
+
+	const unsigned dim = 512;
+	get_incident_light(dim, d->buf, d->display_list, d->multiplier_map.get_id(), d->multiplier_map_sum, 1.0);
+
+	glClearColor(0.f, 0.f, 0.f, 0.f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+	glBindTexture(GL_TEXTURE_2D, d->buf.front_tex_id());
+
+	double f = 1./(double)(dim);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0); glVertex2f(-1, -1);
+	glTexCoord2f(f, 0); glVertex2f( 1, -1);
+	glTexCoord2f(f, f); glVertex2f( 1,  1);
+	glTexCoord2f(0, f); glVertex2f(-1,  1);
+	glEnd();
+*/
+
+void square::calculate_incident(
+	unsigned dim,
+	gl_double_buffer& buf,
+	unsigned scene_display_list,
+	unsigned multiplier_map,
+	unsigned multiplier_map_sum
+) {
 
 // 	glMatrixMode(GL_PROJECTION);
 // 	d->c.apply();
 // 	render_hemicube(d->display_list, d->multiplier_map.get_id());
 
-
 	d->fbo.render_to(incident());
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
-
 	glViewport(0, 0, width, height);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -142,17 +179,53 @@ void square::calculate_incident(unsigned scene_display_list) {
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
+
+	double dx = 1./(double)width;
+	double dy = 1./(double)height;
+
+	double nx, ny, nz;
+	nx = d->udy*d->tdz - d->udz*d->tdy;
+	ny = d->udz*d->tdx - d->udx*d->tdz;
+	nz = d->udx*d->tdy - d->udy*d->tdx;
+
+
 	for (int y=0; y<height; ++y) {
 		for (int x=0; x<width; ++x) {
+
+			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+
+			double cx, cy, cz;
+			cx = d->ox + x * dx * d->tdx + y * dy * d->udx;
+			cy = d->oy + x * dx * d->tdy + y * dy * d->udy;
+			cz = d->oz + x * dx * d->tdz + y * dy * d->udz;
+
+			gluLookAt(
+				cx, cy, cz,
+				cx - nx, cy - ny, cz - nz,
+				d->tdx, d->tdy, d->tdz
+			);
+
+			get_incident_light(dim, buf, scene_display_list, multiplier_map, multiplier_map_sum, 1.0);
+
 			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
-			glColor4f(
+			glColor4f(1, 1, 1, 1);
+			glEnable(GL_TEXTURE_2D);
+			glDisable(GL_DEPTH_TEST);
+			glDisable(GL_BLEND);
+			glBindTexture(GL_TEXTURE_2D, buf.front_tex_id());
+
+			glColor4f(1, 1, 1, 1);
+			/*glColor4f(
 				y % 32 < 16 ? 0.3 : 0.1,
 				x % 32 < 16 ? 0.3 : 0.1,
 				((x^y)&1) ? 0.3 : 0.1,
 				1
-			);
+			);*/
 			pix(x, y);
 		}
+		std::cout << y << '/' << height << std::endl;
 	}
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }

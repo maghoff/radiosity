@@ -6,9 +6,10 @@
 
 void render_hemicube(
 	unsigned scene_list,
-	unsigned multiplier_map
+	unsigned multiplier_map,
+	double z_near
 ) {
-	const int w = 128, h = 128;
+	const int w = 64/4, h = 64/4;
 
 	gl_matrix proj_matrix;
 	proj_matrix.store();
@@ -22,7 +23,7 @@ void render_hemicube(
 	gluPerspective(
 		90.0, // fov y
 		1.0, // Aspect
-		1.0, // z near
+		z_near, // z near
 		100.0 // z far
 	);
 
@@ -36,7 +37,7 @@ void render_hemicube(
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(90.0, 1.0, 1.0, 100.0);
+	gluPerspective(90.0, 1.0, z_near, 100.0);
 	glScalef(1, 1, -1);
 
 	proj_matrix.apply();
@@ -51,7 +52,7 @@ void render_hemicube(
 	glScalef(2, 1, 1);
 	glTranslatef(-0.5, 0, 0);
 
-	gluPerspective(90.0, 1.0, 1.0, 100.0);
+	gluPerspective(90.0, 1.0, z_near, 100.0);
 	glScalef(1, 1, -1);
 
 	glRotated(90.0, 0, 1, 0);
@@ -68,7 +69,7 @@ void render_hemicube(
 	glScalef(2, 1, 1);
 	glTranslatef(0.5, 0, 0);
 
-	gluPerspective(90.0, 1.0, 1.0, 100.0);
+	gluPerspective(90.0, 1.0, z_near, 100.0);
 	glScalef(1, 1, -1);
 
 	glRotated(-90.0, 0, 1, 0);
@@ -85,7 +86,7 @@ void render_hemicube(
 	glScalef(1, 2, 1);
 	glTranslatef(0, -0.5, 0);
 
-	gluPerspective(90.0, 1.0, 1.0, 100.0);
+	gluPerspective(90.0, 1.0, z_near, 100.0);
 	glScalef(1, 1, -1);
 
 	glRotated(-90.0, 1, 0, 0);
@@ -102,7 +103,7 @@ void render_hemicube(
 	glScalef(1, 2, 1);
 	glTranslatef(0, 0.5, 0);
 
-	gluPerspective(90.0, 1.0, 1.0, 100.0);
+	gluPerspective(90.0, 1.0, z_near, 100.0);
 	glScalef(1, 1, -1);
 
 	glRotated(90.0, 1, 0, 0);

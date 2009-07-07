@@ -9,13 +9,14 @@ void get_incident_light(
 	gl_double_buffer& buf,
 	unsigned display_list,
 	unsigned multiplier_map,
-	unsigned multiplier_map_sum
+	unsigned multiplier_map_sum,
+	double z_near
 ) {
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, buf.back_fbo_id());
 
 	glEnable(GL_DEPTH_TEST);
-	render_hemicube(display_list, multiplier_map);
+	render_hemicube(display_list, multiplier_map, z_near);
 	buf.flip();
 
 	glMatrixMode(GL_PROJECTION);

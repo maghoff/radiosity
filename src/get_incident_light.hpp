@@ -8,7 +8,8 @@ void get_incident_light(
 	gl_double_buffer& buf,
 	unsigned display_list,
 	unsigned multiplier_map,
-	unsigned multiplier_map_sum
+	unsigned multiplier_map_sum,
+	double z_near
 );
 
 #endif
