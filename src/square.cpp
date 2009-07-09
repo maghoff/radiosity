@@ -188,7 +188,6 @@ void square::calculate_incident(
 	ny = d->udz*d->tdx - d->udx*d->tdz;
 	nz = d->udx*d->tdy - d->udy*d->tdx;
 
-
 	for (int y=0; y<height; ++y) {
 		for (int x=0; x<width; ++x) {
 
@@ -217,12 +216,6 @@ void square::calculate_incident(
 			glBindTexture(GL_TEXTURE_2D, buf.front_tex_id());
 
 			glColor4f(1, 1, 1, 1);
-			/*glColor4f(
-				y % 32 < 16 ? 0.3 : 0.1,
-				x % 32 < 16 ? 0.3 : 0.1,
-				((x^y)&1) ? 0.3 : 0.1,
-				1
-			);*/
 			pix(x, y);
 		}
 		std::cout << y << '/' << height << std::endl;

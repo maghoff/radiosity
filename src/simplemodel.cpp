@@ -1,3 +1,4 @@
+#include <iostream>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <boost/bind.hpp>
@@ -7,7 +8,7 @@
 #include "circle.hpp"
 #include "debug_gl.hpp"
 #include "flat_color.hpp"
-//#include "get_incident_light.hpp"
+#include "get_incident_light.hpp"
 #include "gl_double_buffer.hpp"
 #include "gl_texture.hpp"
 #include "keyboard_camera_controller.hpp"
@@ -67,7 +68,9 @@ simplemodel::simplemodel() :
 	glEnable(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, d->multiplier_map.get_id());
-	d->multiplier_map_sum = generate_multiplier_map(256, 256);
+	//d->multiplier_map_sum = generate_multiplier_map(256, 256);
+	d->multiplier_map_sum = generate_multiplier_map(64, 64);
+	std::cout << d->multiplier_map_sum << std::endl;
 
 	d->sq[0].set_origin(-1, -1, 1);
 	d->sq[0].set_t_direction(2, 0, 0);
@@ -94,7 +97,8 @@ simplemodel::simplemodel() :
 	flat_color(64, 64, 1.0, 1.0, 1.0, 1.0);
 //	flat_color(256, 256, 0.3, 1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, d->sq[2].emission());
-	circle(64, 64, 16, 48, 64, 2.0, 5.0, 5.0, 5.0, 0.0);
+//	circle(64, 64, 16, 48, 64, 2.0, 5.0, 5.0, 5.0, 0.0);
+	circle(64, 64, 6, 48, 8, 0.3, 4.0, 4.0, 4.0, 0.0);
 
 	d->sq[3].set_origin(-1, -1, -1);
 	d->sq[3].set_t_direction(2, 0, 0);
@@ -131,7 +135,7 @@ simplemodel::simplemodel() :
 
 	calculate_excident();
 
-	for (int i=0; i<12; ++i) {
+	for (int i=0; i<3; ++i) {
 	calculate_incident();
 	calculate_excident();
 	}
@@ -207,7 +211,7 @@ void simplemodel::render() {
 	glMatrixMode(GL_PROJECTION);
 	d->c.apply();
 
-	const unsigned dim = 512;
+	const unsigned dim = 64;
 	get_incident_light(dim, d->buf, d->display_list, d->multiplier_map.get_id(), d->multiplier_map_sum, 1.0);
 
 	glClearColor(0.f, 0.f, 0.f, 0.f);
