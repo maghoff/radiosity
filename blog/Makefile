@@ -1,6 +1,7 @@
 TARGETS = \
 	01-2009-08-22-Welcome.html \
 	02-2009-08-22-GL_PROJECTION-abuse.html \
+	03-2009-08-22-So-your-source-code-is-open-to-the-world.html \
 
 all: $(TARGETS)
 
