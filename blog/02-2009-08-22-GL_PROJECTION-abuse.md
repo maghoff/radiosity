@@ -10,7 +10,7 @@ Background
 When starting the project I decided to spend as little energy on learning OpenGL as possible, making due with what I already knew. As it turns out, I had a lot I needed to learn anyway and during the course of this project I have learned:
 
  1. Not to use P-buffers (this was quick)
- 2. To use [framebuffer][FBO] objects
+ 2. To use [framebuffer objects][FBO]
  3. To use floating point textures for higher dynamic range
  4. Ways to bend `GL_BLEND` to do my bidding
 
