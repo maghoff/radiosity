@@ -9,3 +9,4 @@ Doxyfile
 *.kdev*
 video
 tags
+blog/*.html
