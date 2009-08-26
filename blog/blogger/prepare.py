@@ -36,7 +36,7 @@ def prepare(f):
 		for h in hs:
 			h.tagName = trg
 
-	return (title, doc.toxml('utf8'))
+	return (title, doc.toxml('utf8').replace('\n', ' '))
 
 def main(argv):
 	title, doc = prepare("../02-2009-08-22-GL_PROJECTION-abuse.md")
