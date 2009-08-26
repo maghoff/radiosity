@@ -10,3 +10,6 @@ Doxyfile
 video
 tags
 blog/*.html
+*.pyc
+blog/blogger/token
+blog/blogger/blog_id
