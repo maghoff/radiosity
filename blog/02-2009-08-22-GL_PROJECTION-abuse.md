@@ -28,5 +28,3 @@ I might actually take Steve Baker's advice on how to use the `GL_PROJECTION` mat
 [abuse]: http://www.sjbaker.org/steve/omniv/projection_abuse.html
 [RGBA16F]: http://stackoverflow.com/questions/640095/when-using-a-glrgba16farb-texture-it-contains-just-crap-but-i-get-no-error-me
 [FBO]: http://en.wikipedia.org/wiki/Framebuffer_Object
-[done]: http://www.brepettis.com/blog/2009/3/3/the-cult-of-done-manifesto.html
-

@@ -10,7 +10,4 @@ Instead of fearing what random strangers might think about my source code, I hav
 So please, go and [check it out][source]. :)
 
 
-[02]: 02-2009-08-22-GL_PROJECTION-abuse.html
 [myth]: http://code.google.com/events/io/sessions/MythGeniusProgrammer.html
-[source]: http://munkeliv.ath.cx/~mag/hg/hgwebdir.cgi/simplemodel/
-[done]: http://www.brepettis.com/blog/2009/3/3/the-cult-of-done-manifesto.html
