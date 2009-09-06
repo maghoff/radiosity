@@ -1,7 +1,7 @@
 Preparations
 ============
 
-Install "Google Data APIs Python Client Library" from here: http://code.google.com/p/gdata-python-client/
+Install "Google Data APIs Python Client Library" from here: http://code.google.com/p/gdata-python-client/ (or possibly from sudo apt-get install python-gdata)
 
 Install perl markdown (the original markdown engine)
 sudo apt-get install markdown

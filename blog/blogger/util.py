@@ -27,3 +27,9 @@ def get_blogger_service():
 	blogger_service.SetClientLoginToken(token)
 	return blogger_service
 
+class Info:
+	def __init__(self):
+		self.token = get_token()
+		self.blog_id = get_blog_id()
+		self.blogger_service = get_blogger_service()
+	
