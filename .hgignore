@@ -13,3 +13,5 @@ blog/*.html
 *.pyc
 blog/blogger/token
 blog/blogger/blog_id
+blog/autolinks.md
+blog/draft-*.md

@@ -11,5 +11,10 @@ clean:
 
 remake: clean all
 
-%.html: %.md head.html.template tail.html.template compile_page.sh links.md
+FORCE:
+
+autolinks.md: FORCE
+	./make_autolinks.py
+
+%.html: %.md head.html.template tail.html.template compile_page.sh links.md autolinks.md
 	./compile_page.sh "$<" "$@"
