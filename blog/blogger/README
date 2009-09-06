@@ -1,7 +1,7 @@
 Preparations
 ============
 
-Install "Google Data APIs Python Client Library" from here: http://code.google.com/p/gdata-python-client/ (or possibly from sudo apt-get install python-gdata)
+Install "Google Data APIs Python Client Library" from here: http://code.google.com/p/gdata-python-client/ (or possibly from sudo apt-get install python-gdata. I haven't tried this)
 
 Install perl markdown (the original markdown engine)
 sudo apt-get install markdown
@@ -14,4 +14,4 @@ Run ./auth.py to get ./token, which will hold an authentication token.
 
 Run ./list.py to list out your blogs. Choose a blog_id (the number) and store it in ./blog_id
 
-Run ./add.py to add all blog posts to the blogger blog.
+Run ./update.py to add all blog posts to the blogger blog, as well as update those that were already published, but have since changed. Run with the --write parameter to actually do the changes.

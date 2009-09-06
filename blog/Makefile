@@ -3,6 +3,7 @@ TARGETS = \
 	02-2009-08-22-GL_PROJECTION-abuse.html \
 	03-2009-08-22-So-your-source-code-is-open-to-the-world.html \
 	04-2009-09-06-Results.html \
+	05-2009-09-07-Technical-details.html \
 
 all: $(TARGETS)
 
