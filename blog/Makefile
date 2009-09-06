@@ -11,5 +11,5 @@ clean:
 
 remake: clean all
 
-%.html: %.md head.html.template tail.html.template compile_page.sh
+%.html: %.md head.html.template tail.html.template compile_page.sh links.md
 	./compile_page.sh "$<" "$@"
