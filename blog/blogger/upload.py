@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, re, add, prepare, util
+import os, re, publish, prepare, util
 
 root = u'..'
 
@@ -14,4 +14,4 @@ info = util.Info()
 for f in l:
 	name = os.path.join(root, f)
 	title, doc = prepare.prepare(name)
-	add.publish(info, title, doc)
+	publish.add(info, title, doc)

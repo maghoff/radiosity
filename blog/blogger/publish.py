@@ -10,7 +10,7 @@ def CreatePublicPost(blogger_service, blog_id, title, content):
 	entry.content = atom.Content(content_type='html', text=content)
 	return blogger_service.Post(entry, '/feeds/%s/posts/default' % blog_id)
 
-def publish(info, title, doc):
+def add(info, title, doc):
 	blogEntry = CreatePublicPost(
 		info.blogger_service,
 		info.blog_id, 
