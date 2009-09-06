@@ -10,9 +10,11 @@ def text_content(node):
 	assert node.firstChild.nodeType == Node.TEXT_NODE
 	return node.firstChild.data
 
-def prepare(f):
+def prepare(f, autolinks):
 	input_file = codecs.open(f, mode="r", encoding="utf8")
 	md = input_file.read()
+
+	md += autolinks
 
 	links = codecs.open("../links.md", mode="r", encoding="utf8")
 	md += links.read()
@@ -39,7 +41,7 @@ def prepare(f):
 	return (title, doc.toxml('utf8').replace('\n', ' '))
 
 def main(argv):
-	title, doc = prepare("../02-2009-08-22-GL_PROJECTION-abuse.md")
+	title, doc = prepare("../02-2009-08-22-GL_PROJECTION-abuse.md", "")
 	print 'Title:', title
 	print doc
 
