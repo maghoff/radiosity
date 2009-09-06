@@ -12,6 +12,8 @@ class simplemodel : public ymse::game {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
+	void set_ambient_incident();
+
 	void calculate_incident();
 	void calculate_excident();
 

@@ -103,8 +103,8 @@ void pix(int x, int y) {
 	const double pw = 1.0 / (double)(width);
 	const double ph = 1.0 / (double)(height);
 
-	double x1 = -1 + x*2.*pw, x2 = x1 + 2.*pw;
-	double y1 = -1 + y*2.*ph, y2 = y1 + 2.*ph;
+	double x1 = x * pw, x2 = x1 + pw;
+	double y1 = y * ph, y2 = y1 + ph;
 
 	glBegin(GL_QUADS);
 	glTexCoord2f( 0,  0); glVertex2f(x1, y1);
@@ -195,16 +195,21 @@ void square::calculate_incident(
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
 
-			double cx, cy, cz;
-			cx = d->ox + x * dx * d->tdx + y * dy * d->udx;
-			cy = d->oy + x * dx * d->tdy + y * dy * d->udy;
-			cz = d->oz + x * dx * d->tdz + y * dy * d->udz;
+			double x_c = (double)x + 0.5;
+			double y_c = (double)y + 0.5;
 
+			double cx, cy, cz;
+			cx = d->ox + x_c * dx * d->tdx + y_c * dy * d->udx;
+			cy = d->oy + x_c * dx * d->tdy + y_c * dy * d->udy;
+			cz = d->oz + x_c * dx * d->tdz + y_c * dy * d->udz;
+
+			glScalef(10., 10., 10.);
 			gluLookAt(
 				cx, cy, cz,
 				cx - nx, cy - ny, cz - nz,
 				d->tdx, d->tdy, d->tdz
 			);
+			glScalef(.1, .1, .1);
 
 			get_incident_light(dim, buf, scene_display_list, multiplier_map, multiplier_map_sum, 1.0);
 

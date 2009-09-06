@@ -99,6 +99,7 @@ simplemodel::simplemodel() :
 	glBindTexture(GL_TEXTURE_2D, d->sq[2].emission());
 //	circle(64, 64, 16, 48, 64, 2.0, 5.0, 5.0, 5.0, 0.0);
 	circle(64, 64, 6, 48, 8, 0.3, 4.0, 4.0, 4.0, 0.0);
+//	circle(64, 64, 32, 32, 8, 0.3, 4.0, 4.0, 4.0, 0.0);
 
 	d->sq[3].set_origin(-1, -1, -1);
 	d->sq[3].set_t_direction(2, 0, 0);
@@ -133,11 +134,15 @@ simplemodel::simplemodel() :
 	d->display_list = glGenLists(1);
 	record_display_list();
 
+//	set_ambient_incident();
+
 	calculate_excident();
 
-	for (int i=0; i<3; ++i) {
-	calculate_incident();
-	calculate_excident();
+	const int rounds = 10;
+	for (int i=0; i<rounds; ++i) {
+		std::cout << "==== Round " << i << " ====" << std::endl;
+		calculate_incident();
+		calculate_excident();
 	}
 }
 
@@ -146,6 +151,19 @@ simplemodel::~simplemodel() {
 
 	d->kbd.unbind(ymse::KEY_1);
 	d->kbd.unbind(ymse::KEY_2);
+}
+
+void simplemodel::set_ambient_incident() {
+	for (int i=0; i<6; ++i) {
+		glBindTexture(GL_TEXTURE_2D, d->sq[i].incident());
+		flat_color(64, 64,
+			i&4 ? 0.5 : 0.2,
+			i&2 ? 0.5 : 0.2,
+			i&1 ? 0.5 : 0.2,
+			1.0
+		);
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void simplemodel::calculate_incident() {
@@ -199,7 +217,7 @@ void simplemodel::render() {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslated(0, 0, 10);
+//	glTranslated(0, 0, 10);
 
 	glCallList(d->display_list);
 
