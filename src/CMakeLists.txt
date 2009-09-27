@@ -24,8 +24,9 @@ add_executable(
 set_target_properties(
 	simplemodel
 	PROPERTIES
-	COMPILE_FLAGS "-ggdb -pipe -fvisibility-inlines-hidden"
-	COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
+#	COMPILE_FLAGS "-ggdb -ffast-math -pipe -fvisibility-inlines-hidden -Wall"
+	COMPILE_FLAGS "-O3 -ffast-math -pipe -fvisibility-inlines-hidden"
+	COMPILE_DEFINITIONS "NDEBUG;GL_GLEXT_PROTOTYPES"
 )
 
 target_link_libraries(

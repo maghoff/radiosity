@@ -10,6 +10,17 @@ class square : public boost::noncopyable {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
+	double dx, dy;
+	double nx, ny, nz;
+	void get_hemicube(
+		unsigned dim,
+		int x, int y,
+		gl_double_buffer& buf,
+		unsigned scene_display_list,
+		unsigned multiplier_map,
+		unsigned multiplier_map_sum
+	);
+
 public:
 	square();
 	~square();
@@ -20,7 +31,8 @@ public:
 
 	void calculate_incident(
 		unsigned dim,
-		gl_double_buffer& buf,
+		gl_double_buffer bufs[],
+		//gl_double_buffer& buf,
 		unsigned scene_display_list,
 		unsigned multiplier_map,
 		unsigned multiplier_map_sum

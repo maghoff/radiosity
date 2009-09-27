@@ -118,6 +118,10 @@ inline void check_error() {
 	check_error()
 */
 
+#else
+
+#define check_error()
+
 #endif
 
 #endif

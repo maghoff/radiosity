@@ -6,6 +6,7 @@
 #include "gl_double_buffer.hpp"
 #include "gl_fbo.hpp"
 #include "gl_texture.hpp"
+#include "reduce.hpp"
 #include "square.hpp"
 #include "stopwatch.hpp"
 
@@ -160,9 +161,40 @@ void pix(int x, int y) {
 	glEnd();
 */
 
+void square::get_hemicube(
+	unsigned dim,
+	int x, int y,
+	gl_double_buffer& buf,
+	unsigned scene_display_list,
+	unsigned multiplier_map,
+	unsigned multiplier_map_sum
+) {
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	double x_c = (double)x + 0.5;
+	double y_c = (double)y + 0.5;
+
+	double cx, cy, cz;
+	cx = d->ox + x_c * dx * d->tdx + y_c * dy * d->udx;
+	cy = d->oy + x_c * dx * d->tdy + y_c * dy * d->udy;
+	cz = d->oz + x_c * dx * d->tdz + y_c * dy * d->udz;
+
+	glScalef(10., 10., 10.);
+	gluLookAt(
+		cx, cy, cz,
+		cx - nx, cy - ny, cz - nz,
+		d->tdx, d->tdy, d->tdz
+	);
+	glScalef(.1, .1, .1);
+
+	get_incident_light(dim, buf, scene_display_list, multiplier_map, multiplier_map_sum, 1.0);
+}
+
 void square::calculate_incident(
 	unsigned dim,
-	gl_double_buffer& buf,
+	gl_double_buffer bufs[],
 	unsigned scene_display_list,
 	unsigned multiplier_map,
 	unsigned multiplier_map_sum
@@ -182,10 +214,10 @@ void square::calculate_incident(
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
 
-	double dx = 1./(double)width;
-	double dy = 1./(double)height;
+	/*double*/ dx = 1./(double)width;
+	/*double*/ dy = 1./(double)height;
 
-	double nx, ny, nz;
+	/*double nx, ny, nz;*/
 	nx = d->udy*d->tdz - d->udz*d->tdy;
 	ny = d->udz*d->tdx - d->udx*d->tdz;
 	nz = d->udx*d->tdy - d->udy*d->tdx;
@@ -193,39 +225,23 @@ void square::calculate_incident(
 	stopwatch line;
 	for (int y=0; y<height; ++y) {
 		line.start();
-		for (int x=0; x<width; ++x) {
+		const int stride = 8;
+		for (int x=0; x<width; x += stride) {
+			for (int i=0; i<stride; ++i) {
+				get_hemicube(dim, x+i, y, bufs[i], scene_display_list, multiplier_map, multiplier_map_sum);
+			}
 
-			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-
-			double x_c = (double)x + 0.5;
-			double y_c = (double)y + 0.5;
-
-			double cx, cy, cz;
-			cx = d->ox + x_c * dx * d->tdx + y_c * dy * d->udx;
-			cy = d->oy + x_c * dx * d->tdy + y_c * dy * d->udy;
-			cz = d->oz + x_c * dx * d->tdz + y_c * dy * d->udz;
-
-			glScalef(10., 10., 10.);
-			gluLookAt(
-				cx, cy, cz,
-				cx - nx, cy - ny, cz - nz,
-				d->tdx, d->tdy, d->tdz
-			);
-			glScalef(.1, .1, .1);
-
-			get_incident_light(dim, buf, scene_display_list, multiplier_map, multiplier_map_sum, 1.0);
+			reduce(dim, dim, bufs, multiplier_map_sum);
 
 			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
 			glColor4f(1, 1, 1, 1);
 			glEnable(GL_TEXTURE_2D);
 			glDisable(GL_DEPTH_TEST);
 			glDisable(GL_BLEND);
-			glBindTexture(GL_TEXTURE_2D, buf.front_tex_id());
-
-			glColor4f(1, 1, 1, 1);
-			pix(x, y);
+			for (int i=0; i<stride; ++i) {
+				glBindTexture(GL_TEXTURE_2D, bufs[i].front_tex_id());
+				pix(x+i, y);
+			}
 		}
 		line.stop();
 		std::cout << y << '/' << height << ' ' << line.duration() << std::endl;

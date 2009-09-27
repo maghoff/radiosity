@@ -30,7 +30,7 @@ void wii_camera_controller::pump() {
 	cwiid_get_mesg(wiimote, &n, &msgs, &ts);
 */
 
-	int ok = cwiid_get_state(wiimote, &st);
+	/*int ok =*/ cwiid_get_state(wiimote, &st);
 }
 
 double wii_camera_controller::forward() {

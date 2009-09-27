@@ -107,7 +107,7 @@ simplemodel::simplemodel() :
 	d->sq[3].set_t_direction(2, 0, 0);
 	d->sq[3].set_u_direction(0, 0, 2);
 	glBindTexture(GL_TEXTURE_2D, d->sq[3].reflectance());
-	flat_color(64, 64, 1.0, 0.3, 0.3, 1.0);
+	flat_color(64, 64, 1.0, 0.7, 0.7, 1.0);
 // 	glBindTexture(GL_TEXTURE_2D, d->sq[3].emission());
 // 	circle(256, 256, 64, 64, 32, 5.0, 1.0, 1.0, 1.0, 0.0);
 
@@ -140,14 +140,17 @@ simplemodel::simplemodel() :
 
 	calculate_excident();
 
+	gl_double_buffer bufs[8];
+	for (int i=0; i<8; ++i) bufs[i].set_size(64, 64);
+
 	stopwatch entire, round;
 	entire.start();
 
-	const int rounds = 2;
+	const int rounds = 1;
 	for (int i=0; i<rounds; ++i) {
 		std::cout << "==== Round " << i << " ====" << std::endl;
 		round.start();
-		calculate_incident();
+		calculate_incident(bufs);
 		calculate_excident();
 		round.stop();
 		std::cout << "Round " << i << " took " << round.duration() << std::endl;
@@ -178,11 +181,11 @@ void simplemodel::set_ambient_incident() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void simplemodel::calculate_incident() {
+void simplemodel::calculate_incident(gl_double_buffer bufs[]) {
 	for (int i=0; i<6; ++i) {
 		d->sq[i].calculate_incident(
 			64,
-			d->buf,
+			bufs, //d->buf,
 			d->display_list,
 			d->multiplier_map.get_id(),
 			d->multiplier_map_sum

@@ -8,13 +8,15 @@ namespace ymse {
 class keyboard_handler;
 }
 
+class gl_double_buffer;
+
 class simplemodel : public ymse::game {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
 	void set_ambient_incident();
 
-	void calculate_incident();
+	void calculate_incident(gl_double_buffer bufs[]);
 	void calculate_excident();
 
 	void record_display_list();

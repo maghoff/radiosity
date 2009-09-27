@@ -114,7 +114,12 @@ void reducer::reducew() {
 
 }
 
-void reduce(int w, int h, gl_double_buffer& buf, double divisor) {
+void reduce(int w, int h, gl_double_buffer buf[], double divisor) {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
 	glTranslatef(-1.f, -1.f, 0.f);
 	glScalef(2.f, 2.f, 1.f);
 
@@ -128,10 +133,15 @@ void reduce(int w, int h, gl_double_buffer& buf, double divisor) {
 
 	glViewport(0, 0, w, h);
 
-	reducer r;
-	r.set_buf(&buf);
-	r.set_size(w, h);
-	while (!r.done()) r.step();
+	const int buffers = 8;
+	reducer r[buffers];
+	for (int i=0; i<buffers; ++i) {
+		r[i].set_buf(&buf[i]);
+		r[i].set_size(w, h);
+	}
+	while (!r[0].done()) {
+		for (int i=0; i<buffers; ++i) r[i].step();
+	}
 
 	check_error();
 }
