@@ -2,6 +2,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <boost/bind.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
 #include <ymse/keycodes.hpp>
 #include "camera.hpp"
@@ -15,6 +16,7 @@
 #include "multiplier_map.hpp"
 #include "simplemodel.hpp"
 #include "square.hpp"
+#include "stopwatch.hpp"
 #include "wii_camera_controller.hpp"
 
 
@@ -138,12 +140,22 @@ simplemodel::simplemodel() :
 
 	calculate_excident();
 
-	const int rounds = 10;
+	stopwatch entire, round;
+	entire.start();
+
+	const int rounds = 2;
 	for (int i=0; i<rounds; ++i) {
 		std::cout << "==== Round " << i << " ====" << std::endl;
+		round.start();
 		calculate_incident();
 		calculate_excident();
+		round.stop();
+		std::cout << "Round " << i << " took " << round.duration() << std::endl;
 	}
+
+	entire.stop();
+	std::cout << "Entire rendering took " << entire.duration() << std::endl;
+	std::cout << "On average " << (entire.duration() / rounds) << " per round" << std::endl;
 }
 
 simplemodel::~simplemodel() {

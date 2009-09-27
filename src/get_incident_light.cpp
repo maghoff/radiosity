@@ -3,6 +3,7 @@
 #include "gl_double_buffer.hpp"
 #include "hemicube.hpp"
 #include "reduce.hpp"
+#include "stopwatch.hpp"
 
 void get_incident_light(
 	unsigned dim,

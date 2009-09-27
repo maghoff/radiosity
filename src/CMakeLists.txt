@@ -17,6 +17,7 @@ add_executable(
 	reduce.cpp
 	simplemodel.cpp
 	square.cpp
+	stopwatch.cpp
 	wii_camera_controller.cpp
 )
 

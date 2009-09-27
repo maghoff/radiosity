@@ -1,11 +1,13 @@
 #include <iostream>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include "get_incident_light.hpp"
 #include "gl_double_buffer.hpp"
 #include "gl_fbo.hpp"
 #include "gl_texture.hpp"
 #include "square.hpp"
+#include "stopwatch.hpp"
 
 namespace {
 	const int width = 64, height = 64;
@@ -188,7 +190,9 @@ void square::calculate_incident(
 	ny = d->udz*d->tdx - d->udx*d->tdz;
 	nz = d->udx*d->tdy - d->udy*d->tdx;
 
+	stopwatch line;
 	for (int y=0; y<height; ++y) {
+		line.start();
 		for (int x=0; x<width; ++x) {
 
 			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
@@ -223,7 +227,8 @@ void square::calculate_incident(
 			glColor4f(1, 1, 1, 1);
 			pix(x, y);
 		}
-		std::cout << y << '/' << height << std::endl;
+		line.stop();
+		std::cout << y << '/' << height << ' ' << line.duration() << std::endl;
 	}
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }
