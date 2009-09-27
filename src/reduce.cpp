@@ -9,104 +9,111 @@
 
 namespace {
 
-void reduceh(int, int h, gl_double_buffer& buf) {
-	GLfloat hf = 1.f;
+class reducer {
+	gl_double_buffer* buf;
 
-	for ( ; h > 1; h /= 2) {
-		hf /= 2.f;
+	int w, h;
+	GLfloat wf, hf;
 
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, buf.back_fbo_id());
-		glBindTexture(GL_TEXTURE_2D, buf.front_tex_id());
+	void reduceh();
+	void reducew();
 
-		glDisable(GL_BLEND);
+	typedef void (reducer::*reducefunc)();
+	reducefunc reducef;
 
-		glBegin(GL_QUADS);
-		glTexCoord2f(0.f, 0.f); glVertex2f(0.0f, 0.0f);
-		glTexCoord2f(1.f, 0.f); glVertex2f(1.0f, 0.0f);
-		glTexCoord2f(1.f,  hf); glVertex2f(1.0f,   hf);
-		glTexCoord2f(0.f,  hf); glVertex2f(0.0f,   hf);
-		glEnd();
+public:
+	reducer();
 
-		glEnable(GL_BLEND);
+	void set_buf(gl_double_buffer* buf);
+	void set_size(int w, int h);
 
-		glBegin(GL_QUADS);
-		glTexCoord2f(0.f,     hf); glVertex2f(0.0f, 0.0f);
-		glTexCoord2f(1.f,     hf); glVertex2f(1.0f, 0.0f);
-		glTexCoord2f(1.f, 2.f*hf); glVertex2f(1.0f,   hf);
-		glTexCoord2f(0.f, 2.f*hf); glVertex2f(0.0f,   hf);
-		glEnd();
+	bool done() const;
+	void step();
+};
 
-		buf.flip();
-	}
+reducer::reducer() :
+	w(-1),
+	wf(1.f), hf(1.f),
+	reducef(&reducer::reduceh)
+{
 }
 
-void reducew(int w, int h, gl_double_buffer& buf) {
-	GLfloat wf = 1.f;
-	GLfloat hf = 1.f / h;
-
-	for ( ; w > 1; w /= 2) {
-		wf /= 2.f;
-
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, buf.back_fbo_id());
-		glBindTexture(GL_TEXTURE_2D, buf.front_tex_id());
-
-		glDisable(GL_BLEND);
-
-		glBegin(GL_QUADS);
-		glTexCoord2f(0.f, 0.f); glVertex2f(0.0f, 0.0f);
-		glTexCoord2f( wf, 0.f); glVertex2f(  wf, 0.0f);
-		glTexCoord2f( wf,  hf); glVertex2f(  wf,   hf);
-		glTexCoord2f(0.f,  hf); glVertex2f(0.0f,   hf);
-		glEnd();
-
-		glEnable(GL_BLEND);
-
-		glBegin(GL_QUADS);
-		glTexCoord2f(    wf, 0.0f); glVertex2f(0.0f, 0.0f);
-		glTexCoord2f(2.f*wf, 0.0f); glVertex2f(  wf, 0.0f);
-		glTexCoord2f(2.f*wf,   hf); glVertex2f(  wf,   hf);
-		glTexCoord2f(    wf,   hf); glVertex2f(0.0f,   hf);
-		glEnd();
-
-		buf.flip();
-	}
+void reducer::set_buf(gl_double_buffer* buf_) {
+	buf = buf_;
 }
 
+void reducer::set_size(int w_, int h_) {
+	w = w_;
+	h = h_;
 }
-/*
-void reduce(int w, int h, gl_fbo& f1, gl_fbo& f2, gl_texture& t1, gl_texture& t2) {
-	glTranslatef(-1.f, -1.f, 0.f);
-	glScalef(2.f, 2.f, 1.f);
 
-	glEnable(GL_TEXTURE_2D);
-	glBlendFunc(GL_ONE, GL_ONE);
+bool reducer::done() const {
+	return w == 1;
+}
 
-//	glColor4f(1.f, 1.f, 1.f, 1.f);
-	double fact = 0.538847;
-	glColor4f(fact, fact, fact, fact);
+void reducer::step() {
+	(this->*reducef)();
+}
 
-	// The fact-number is calculated in multiplier_map.cpp. I don't care
-	// enough to refactor right now.
+void reducer::reduceh() {
+	hf /= 2.f;
+	h /= 2;
+	if (h == 1) reducef = &reducer::reducew;
 
-	// We are going to do 16 halvings of the texture. In each one, we
-	// multiply by fact, which is the same as dividing by 1/fact. Since we do
-	// this sixteen times, we end up dividing by 1/fact^16.
-
-	// fact is taken such that 1/fact^16 equals the total sum of the
-	// multiplier map.
-
-	glViewport(0, 0, w, h);
-
-	GLuint fbos[] = { f1.get_id(), f2.get_id() };
-	GLuint texs[] = { t1.get_id(), t2.get_id() };
-
-	int read = 0;
-	reduceh(h, fbos, texs, read);
-	reducew(w, fbos, texs, read);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, buf->back_fbo_id());
+	glBindTexture(GL_TEXTURE_2D, buf->front_tex_id());
 
 	glDisable(GL_BLEND);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.f, 0.f); glVertex2f(0.f, 0.f);
+	glTexCoord2f( wf, 0.f); glVertex2f( wf, 0.f);
+	glTexCoord2f( wf,  hf); glVertex2f( wf,  hf);
+	glTexCoord2f(0.f,  hf); glVertex2f(0.f,  hf);
+	glEnd();
+
+	glEnable(GL_BLEND);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.f,     hf); glVertex2f(0.f, 0.f);
+	glTexCoord2f( wf,     hf); glVertex2f( wf, 0.f);
+	glTexCoord2f( wf, 2.f*hf); glVertex2f( wf,  hf);
+	glTexCoord2f(0.f, 2.f*hf); glVertex2f(0.f,  hf);
+	glEnd();
+
+	buf->flip();
 }
-*/
+
+void reducer::reducew() {
+	wf /= 2.f;
+	w /= 2;
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, buf->back_fbo_id());
+	glBindTexture(GL_TEXTURE_2D, buf->front_tex_id());
+
+	glDisable(GL_BLEND);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.f, 0.f); glVertex2f(0.f, 0.f);
+	glTexCoord2f( wf, 0.f); glVertex2f( wf, 0.f);
+	glTexCoord2f( wf,  hf); glVertex2f( wf,  hf);
+	glTexCoord2f(0.f,  hf); glVertex2f(0.f,  hf);
+	glEnd();
+
+	glEnable(GL_BLEND);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(    wf, 0.f); glVertex2f(0.f, 0.f);
+	glTexCoord2f(2.f*wf, 0.f); glVertex2f( wf, 0.f);
+	glTexCoord2f(2.f*wf,  hf); glVertex2f( wf,  hf);
+	glTexCoord2f(    wf,  hf); glVertex2f(0.f,  hf);
+	glEnd();
+
+	buf->flip();
+}
+
+}
+
 void reduce(int w, int h, gl_double_buffer& buf, double divisor) {
 	glTranslatef(-1.f, -1.f, 0.f);
 	glScalef(2.f, 2.f, 1.f);
@@ -116,13 +123,15 @@ void reduce(int w, int h, gl_double_buffer& buf, double divisor) {
 	glBlendFunc(GL_ONE, GL_ONE);
 
 	int halvings = log2(w) + log2(h);
-	double fact = 1./pow(divisor, 1.0/(double)halvings);
+	double fact = 1./pow(divisor, 1./(double)halvings);
 	glColor4f(fact, fact, fact, fact);
 
 	glViewport(0, 0, w, h);
 
-	reduceh(w, h, buf);
-	reducew(w, h, buf);
+	reducer r;
+	r.set_buf(&buf);
+	r.set_size(w, h);
+	while (!r.done()) r.step();
 
 	check_error();
 }
