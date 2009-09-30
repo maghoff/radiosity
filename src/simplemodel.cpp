@@ -146,7 +146,7 @@ simplemodel::simplemodel() :
 	stopwatch entire, round;
 	entire.start();
 
-	const int rounds = 1;
+	const int rounds = 10;
 	for (int i=0; i<rounds; ++i) {
 		std::cout << "==== Round " << i << " ====" << std::endl;
 		round.start();

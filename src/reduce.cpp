@@ -58,7 +58,6 @@ void reducer::step() {
 void reducer::reduceh() {
 	hf /= 2.f;
 	h /= 2;
-	if (h == 1) reducef = &reducer::reducew;
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, buf->back_fbo_id());
 	glBindTexture(GL_TEXTURE_2D, buf->front_tex_id());
@@ -82,6 +81,8 @@ void reducer::reduceh() {
 	glEnd();
 
 	buf->flip();
+
+	if (h == 1) reducef = &reducer::reducew;
 }
 
 void reducer::reducew() {

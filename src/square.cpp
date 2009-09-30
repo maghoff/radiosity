@@ -189,7 +189,7 @@ void square::get_hemicube(
 	);
 	glScalef(.1, .1, .1);
 
-	get_incident_light(dim, buf, scene_display_list, multiplier_map, multiplier_map_sum, 1.0);
+	get_incident_light(dim, buf, scene_display_list, multiplier_map, multiplier_map_sum, 1.0/10.0);
 }
 
 void square::calculate_incident(
