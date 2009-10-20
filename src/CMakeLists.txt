@@ -31,7 +31,7 @@ set_target_properties(
 
 target_link_libraries(
 	simplemodel
-	boost_thread
+	boost_thread-mt
 	GL
 	glut
 	${YMSE_LIBRARY}
