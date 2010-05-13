@@ -1,10 +1,5 @@
 syntax: glob
-CMakeFiles
-CMakeCache.txt
 *~
-src/simplemodel
-Makefile
-cmake_install.cmake
 Doxyfile
 *.kdev*
 video
@@ -16,3 +11,7 @@ blog/blogger/token
 blog/blogger/blog_id
 blog/autolinks.md
 blog/draft-*.md
+debug
+release
+
+*.user
